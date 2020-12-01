@@ -6,6 +6,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Objects;
 
+/**
+ * Роли в системе. Подразумевается 3 роли, для удобства описаны в enum.
+ *
+ */
 @Entity
 public class Role {
 
