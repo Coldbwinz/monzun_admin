@@ -1,22 +1,22 @@
-package com.example.model;
+package com.example.monzun_admin.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Objects;
 
 /**
  * Роли в системе. Подразумевается 3 роли, для удобства описаны в enum.
- *
  */
 @Entity
+@Table(name = "roles", schema = "public")
 public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "role_id")
     private int roleId;
+    @Column(name = "name", nullable = false)
     private String name;
+    @Column(name = "title")
     private String title;
 
     @Override
@@ -32,9 +32,7 @@ public class Role {
         return Objects.hash(roleId);
     }
 
-    public int getRoleId() {
-        return roleId;
-    }
+    public int getRoleId() { return roleId; }
 
     public void setRoleId(int roleId) {
         this.roleId = roleId;
@@ -48,37 +46,11 @@ public class Role {
         this.title = title;
     }
 
-    public void setId(int id) {
-        this.roleId = id;
-    }
-
-    public int getId() {
-        return roleId;
-    }
-
-
     public String getName() {
         return name;
     }
 
     public String getTitle() {
         return title;
-    }
-}
-
-
-enum RoleId {
-    ADMIN(1),
-    STARTUP(2),
-    TRACKER(3);
-
-    private final int roleId;
-
-    RoleId(int roleId) {
-        this.roleId = roleId;
-    }
-
-    public int getRoleId() {
-        return this.roleId;
     }
 }
