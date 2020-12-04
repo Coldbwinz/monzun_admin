@@ -1,25 +1,30 @@
-package com.example.monzun_admin.response;
+package com.example.monzun_admin.dto;
 
 import com.example.monzun_admin.model.Attachment;
 
 import java.util.Date;
 import java.util.UUID;
 
-public class AttachmentResponse {
+public class AttachmentDTO {
     private UUID uuid;
     private String fileName;
+    private String url;
     private String originalFilename;
     private String path;
-    private UserListResponse owner;
+    private UserListDTO owner;
     private Date createdAt;
 
-    public AttachmentResponse(Attachment attachment) {
+    public AttachmentDTO(Attachment attachment) {
         this.uuid = attachment.getUuid();
+        this.url = attachment.getUrl();
         this.fileName = attachment.getFilename();
         this.originalFilename = attachment.getOriginalFilename();
         this.path = attachment.getPath();
-        this.owner = new UserListResponse(attachment.getOwner());
+        this.owner = new UserListDTO(attachment.getOwner());
         this.createdAt = attachment.getCreatedAt();
+    }
+
+    public AttachmentDTO() {
     }
 
     public UUID getUuid() {
@@ -28,6 +33,14 @@ public class AttachmentResponse {
 
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public String getFileName() {
@@ -54,11 +67,11 @@ public class AttachmentResponse {
         this.path = path;
     }
 
-    public UserListResponse getOwner() {
+    public UserListDTO getOwner() {
         return owner;
     }
 
-    public void setOwner(UserListResponse owner) {
+    public void setOwner(UserListDTO owner) {
         this.owner = owner;
     }
 

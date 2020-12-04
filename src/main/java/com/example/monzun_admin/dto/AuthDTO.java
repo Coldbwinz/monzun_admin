@@ -1,9 +1,9 @@
-package com.example.monzun_admin.response;
+package com.example.monzun_admin.dto;
 
-public class AuthResponse {
+public class AuthDTO {
     private final String token;
 
-    public AuthResponse(String token) {
+    public AuthDTO(String token) {
         this.token = token;
     }
 

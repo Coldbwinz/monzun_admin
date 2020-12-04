@@ -2,7 +2,7 @@ CREATE TABLE users (
     user_id BIGSERIAL PRIMARY KEY,
     role_id SMALLINT,
     name VARCHAR(80) NOT NULL,
-    email VARCHAR(80) NOT NULL,
+    email VARCHAR(80) NOT NULL UNIQUE,
     password VARCHAR NOT NULL,
     phone VARCHAR(40),
     is_blocked BOOLEAN DEFAULT FALSE,

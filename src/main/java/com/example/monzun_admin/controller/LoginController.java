@@ -3,7 +3,7 @@ package com.example.monzun_admin.controller;
 import com.example.monzun_admin.enums.RoleEnum;
 import com.example.monzun_admin.model.User;
 import com.example.monzun_admin.repository.UserRepository;
-import com.example.monzun_admin.response.AuthResponse;
+import com.example.monzun_admin.dto.AuthDTO;
 import com.example.monzun_admin.security.JwtUtil;
 import com.example.monzun_admin.request.AuthRequest;
 import com.example.monzun_admin.service.MyUserDetailsService;
@@ -46,13 +46,13 @@ public class LoginController {
          * Проверка на роль авторизованного пользователя. Допускается только администратор.
          */
         User user = userRepository.findByEmail(request.getEmail());
-        if (user.getRole().getRoleId() != RoleEnum.ADMIN.getRoleId()) {
+        if (!user.getRole().equals(RoleEnum.ADMIN.getRole())) {
             return new ResponseEntity<User>(HttpStatus.FORBIDDEN);
         }
 
         final UserDetails userDetails = myUserDetailsService.loadUserByUsername(request.getEmail());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
 
-        return ResponseEntity.ok(new AuthResponse(jwt));
+        return ResponseEntity.ok(new AuthDTO(jwt));
     }
 }

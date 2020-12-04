@@ -12,6 +12,7 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -53,13 +54,12 @@ public class AttachmentService {
         try {
             Attachment attachment = attachmentRepository.findByuuid(Uuid);
             Path filePath = Paths.get(attachment.getPath());
-            Resource resource = new UrlResource(filePath.toUri());
 
-            if(!resource.exists()) {
+            if (!filePath.toFile().exists()) {
                 throw new FileNotFoundException("file not found " + Uuid);
             }
 
-            return resource;
+            return new UrlResource(filePath.toUri());
         } catch (MalformedURLException ex) {
             throw new FileNotFoundException("File not found " + Uuid);
         }
@@ -95,7 +95,10 @@ public class AttachmentService {
             throw new UserByEmailNotFound("User with email " + email + " not found");
         }
 
+        String baseURL = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
         Attachment attachment = new Attachment();
+
+        attachment.setUrl(baseURL + "/api/attachment/download/" + attachment.getUuid());
         attachment.setFilename(file.getName());
         attachment.setOriginalFilename(file.getOriginalFilename());
         attachment.setPath(UPLOAD_PATH + file.getOriginalFilename());

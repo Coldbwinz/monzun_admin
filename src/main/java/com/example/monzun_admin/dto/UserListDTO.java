@@ -1,14 +1,19 @@
-package com.example.monzun_admin.response;
+package com.example.monzun_admin.dto;
 
 import com.example.monzun_admin.model.User;
 
-public class UserListResponse {
+public class UserListDTO {
     private Long id;
     private String name;
+    private AttachmentShortDTO logo;
 
-    public UserListResponse (User user) {
+    public UserListDTO() {
+    }
+
+    public UserListDTO(User user) {
         this.id = user.getId();
         this.name = user.getName();
+        this.logo = new AttachmentShortDTO(user.getLogo());
     }
 
     public Long getId() {
@@ -25,5 +30,13 @@ public class UserListResponse {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public AttachmentShortDTO getLogo() {
+        return logo;
+    }
+
+    public void setLogo(AttachmentShortDTO logo) {
+        this.logo = logo;
     }
 }
