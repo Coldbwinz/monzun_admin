@@ -1,7 +1,7 @@
 CREATE TABLE roles (
-    role_id smallint primary key,
-    name varchar(40) NOT NULL,
-    title varchar(40) NOT NULL
+    role_id SMALLSERIAL PRIMARY KEY,
+    name VARCHAR(40) NOT NULL,
+    title VARCHAR(40) NOT NULL
 );
 
 INSERT INTO roles VALUES

@@ -1,5 +1,5 @@
 CREATE TABLE users (
-    user_id BIGINT PRIMARY KEY,
+    user_id BIGSERIAL PRIMARY KEY,
     role_id SMALLINT,
     name VARCHAR(80) NOT NULL,
     email VARCHAR(80) NOT NULL,

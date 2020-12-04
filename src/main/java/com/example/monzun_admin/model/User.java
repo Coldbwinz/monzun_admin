@@ -5,6 +5,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "users", schema = "public")
+@DiscriminatorValue("USR")
 public class User {
 
     @Id
