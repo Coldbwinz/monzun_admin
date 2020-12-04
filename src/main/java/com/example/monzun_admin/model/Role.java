@@ -27,12 +27,23 @@ public class Role {
         return roleId == role.roleId;
     }
 
+    public Role() {
+    }
+
+    public Role(int roleId, String name, String title) {
+        this.roleId = roleId;
+        this.name = name;
+        this.title = title;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(roleId);
     }
 
-    public int getRoleId() { return roleId; }
+    public int getRoleId() {
+        return roleId;
+    }
 
     public void setRoleId(int roleId) {
         this.roleId = roleId;

@@ -1,17 +1,20 @@
 package com.example.monzun_admin.enums;
 
+import com.example.monzun_admin.model.Role;
+
 public enum RoleEnum {
-    ADMIN(1),
-    STARTUP(2),
-    TRACKER(3);
+    ADMIN(new Role(1, "admin", "Администратор")),
+    STARTUP(new Role(2, "startup", "Участник")),
+    TRACKER(new Role(3, "tracker", "Наблюдатель"));
 
-    private final int roleId;
+    private final Role role;
 
-    RoleEnum(int roleId) {
-        this.roleId = roleId;
+
+    RoleEnum(Role role) {
+        this.role = role;
     }
 
-    public int getRoleId() {
-        return this.roleId;
+    public Role getRole() {
+        return this.role;
     }
 }

@@ -8,7 +8,7 @@ import java.util.UUID;
 @Table(name = "attachments", schema = "public")
 public class Attachment {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "attachment_id", updatable = false, nullable = false)
     private Long id;
     @Column(name = "uuid")

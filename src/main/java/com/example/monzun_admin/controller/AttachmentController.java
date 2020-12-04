@@ -1,6 +1,6 @@
 package com.example.monzun_admin.controller;
 
-import com.example.monzun_admin.response.AttachmentResponse;
+import com.example.monzun_admin.dto.AttachmentDTO;
 import com.example.monzun_admin.service.AttachmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -22,18 +23,24 @@ public class AttachmentController {
     private AttachmentService attachmentService;
 
     @PostMapping("/upload")
-    public AttachmentResponse upload(@RequestParam("file") MultipartFile file) throws IOException {
-        return new AttachmentResponse(attachmentService.storeFile(file));
+    public AttachmentDTO upload(@RequestParam("file") MultipartFile file) throws IOException {
+        return new AttachmentDTO(attachmentService.storeFile(file));
     }
 
     @GetMapping("/download/{uuid:.+}")
-    public ResponseEntity<Resource> download(@PathVariable String uuid, HttpServletRequest request) throws IOException {
+    public ResponseEntity<Resource> download(
+            @RequestParam Optional<Boolean> forceDownload,
+            @PathVariable String uuid,
+            HttpServletRequest request
+    ) throws IOException {
         Resource resource = attachmentService.download(UUID.fromString(uuid));
         String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        String contentDisposition = forceDownload.isPresent() ? "attachment" : "inline";
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition
+                        + "; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
 
