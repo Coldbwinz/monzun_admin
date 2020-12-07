@@ -23,7 +23,7 @@ public class UserDTO {
     public UserDTO(User user) {
         this.id = user.getId();
         this.name = user.getName();
-        this.logo = new AttachmentShortDTO(user.getLogo()) ;
+        this.logo = user.getLogo() != null ? new AttachmentShortDTO(user.getLogo()) : null;
         this.email = user.getEmail();
         this.phone = user.getPhone();
         this.isBlocked = user.isBlocked();
