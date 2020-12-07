@@ -62,20 +62,16 @@ public class MeController {
         String token = UUID.randomUUID().toString();
         passwordResetTokenService.createPasswordResetTokenForUser(user, token);
 
-        Mail mail = new Mail();
-        mail.setFrom(environment.getProperty("SYSTEM_EMAIL_FROM"));
-        mail.setMailTo(user.getEmail());
-        mail.setSubject("Reset password");
-
         StringBuilder url = new StringBuilder(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString());
         url.append("api/me/confirmReset?token=");
         url.append(token);
 
-        Map<String, Object> model = new HashMap<>();
-        model.put("name", user.getName());
-        model.put("button-url", url);
-        model.put("sign", environment.getProperty("APP_NAME"));
-        mail.setProps(model);
+        Map<String, Object> props = new HashMap<>();
+        props.put("name", user.getName());
+        props.put("button-url", url);
+        props.put("sign", environment.getProperty("APP_NAME"));
+
+        Mail mail = emailService.createMail(user.getEmail(), "Reset password", props);
 
         try {
             emailService.sendEmail(mail, "resetPassword");

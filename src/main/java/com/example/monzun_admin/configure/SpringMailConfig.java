@@ -25,7 +25,7 @@ public class SpringMailConfig {
     @Bean
     public SpringResourceTemplateResolver htmlTemplateResolver() {
         SpringResourceTemplateResolver emailTemplateResolver = new SpringResourceTemplateResolver();
-        emailTemplateResolver.setPrefix("classpath:/mails/");
+        emailTemplateResolver.setPrefix("classpath:/templates/mails/");
         emailTemplateResolver.setSuffix(ThymeleafProperties.DEFAULT_SUFFIX);
         emailTemplateResolver.setTemplateMode(TemplateMode.HTML);
         emailTemplateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());

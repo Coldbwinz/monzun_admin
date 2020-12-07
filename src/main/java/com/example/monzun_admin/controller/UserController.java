@@ -50,7 +50,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(new UserDTO(user.get()));
     }
 
-    @PostMapping("")
+    @PostMapping()
     public ResponseEntity<?> create(@Valid @RequestBody UserRequest userRequest) {
         User user = userService.create(userRequest);
         return ResponseEntity.status(HttpStatus.OK).body(new UserDTO(user));
