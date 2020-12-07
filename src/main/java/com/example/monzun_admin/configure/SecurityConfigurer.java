@@ -1,5 +1,6 @@
-package com.example.monzun_admin.security;
+package com.example.monzun_admin.configure;
 
+import com.example.monzun_admin.security.JwtRequestFilter;
 import com.example.monzun_admin.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
