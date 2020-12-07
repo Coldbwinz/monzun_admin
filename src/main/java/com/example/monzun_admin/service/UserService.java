@@ -2,6 +2,7 @@ package com.example.monzun_admin.service;
 
 import com.example.monzun_admin.enums.RoleEnum;
 import com.example.monzun_admin.model.User;
+import com.example.monzun_admin.repository.PasswordResetTokenRepository;
 import com.example.monzun_admin.repository.UserRepository;
 import com.example.monzun_admin.request.UserRequest;
 import net.bytebuddy.utility.RandomString;
@@ -20,6 +21,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
 
     public User create(UserRequest request) {
         User user = new User();
@@ -61,6 +65,12 @@ public class UserService {
         userRepository.delete(user.get());
 
         return true;
+    }
+
+    public void changePassword(User user, String password) {
+        user.setPassword(passwordEncoder.encode(password));
+        user.setUpdatedAt(new Date());
+        userRepository.saveAndFlush(user);
     }
 
     private String generatePassword() {
