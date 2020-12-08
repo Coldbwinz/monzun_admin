@@ -1,13 +1,11 @@
 package com.example.monzun_admin.entities;
 
-import groovy.transform.Generated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.lang.annotation.Annotation;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
