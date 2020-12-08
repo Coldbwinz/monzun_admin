@@ -1,6 +1,6 @@
 package com.example.monzun_admin.jobs;
 
-import com.example.monzun_admin.model.Mail;
+import com.example.monzun_admin.entities.Mail;
 import com.example.monzun_admin.service.EmailService;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;

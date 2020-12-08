@@ -1,7 +1,7 @@
 package com.example.monzun_admin.controller;
 
 import com.example.monzun_admin.enums.RoleEnum;
-import com.example.monzun_admin.model.User;
+import com.example.monzun_admin.entities.User;
 import com.example.monzun_admin.repository.UserRepository;
 import com.example.monzun_admin.dto.AuthDTO;
 import com.example.monzun_admin.security.JwtUtil;

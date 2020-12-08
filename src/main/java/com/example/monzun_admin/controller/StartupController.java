@@ -2,7 +2,7 @@ package com.example.monzun_admin.controller;
 
 import com.example.monzun_admin.dto.StartupDTO;
 import com.example.monzun_admin.dto.StartupListDTO;
-import com.example.monzun_admin.model.Startup;
+import com.example.monzun_admin.entities.Startup;
 import com.example.monzun_admin.repository.StartupRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/startups")
-public class StartupController {
+public class StartupController extends BaseRestController {
 
     @Autowired
     private StartupRepository startupRepository;
@@ -38,22 +38,22 @@ public class StartupController {
     public ResponseEntity<?> show(@PathVariable Long id) {
         Optional<Startup> startup = startupRepository.findById(id);
         if (!startup.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
 
         }
         return ResponseEntity.status(HttpStatus.OK).body(new StartupDTO(startup.get()));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         Optional<Startup> startup = startupRepository.findById(id);
 
         if (!startup.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
         }
         startupRepository.delete(startup.get());
 
-        return ResponseEntity.status(HttpStatus.OK).body(true);
+        return ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse());
     }
 
     private StartupListDTO convertToDto(Startup startup) {

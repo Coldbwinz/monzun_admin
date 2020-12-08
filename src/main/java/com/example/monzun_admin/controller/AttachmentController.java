@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("api/attachment")
-public class AttachmentController {
+public class AttachmentController extends BaseRestController {
     @Autowired
     private AttachmentService attachmentService;
 
@@ -45,9 +45,9 @@ public class AttachmentController {
     }
 
     @DeleteMapping("/delete/{uuid:.+}")
-    public ResponseEntity<Boolean> delete(@PathVariable String uuid) throws IOException {
+    public ResponseEntity<?> delete(@PathVariable String uuid) throws IOException {
         return attachmentService.delete(UUID.fromString(uuid))
-                ? ResponseEntity.status(HttpStatus.OK).body(true)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+                ? ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse())
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
     }
 }

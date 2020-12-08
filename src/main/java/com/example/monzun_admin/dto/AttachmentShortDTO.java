@@ -1,6 +1,6 @@
 package com.example.monzun_admin.dto;
 
-import com.example.monzun_admin.model.Attachment;
+import com.example.monzun_admin.entities.Attachment;
 
 import java.util.Date;
 import java.util.UUID;

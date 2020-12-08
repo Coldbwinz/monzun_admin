@@ -1,4 +1,9 @@
-package com.example.monzun_admin.model;
+package com.example.monzun_admin.entities;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -7,6 +12,10 @@ import java.util.Objects;
  * Роли в системе. Подразумевается 3 роли, для удобства описаны в enum.
  */
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "roles", schema = "public")
 public class Role {
 
@@ -27,41 +36,9 @@ public class Role {
         return roleId == role.roleId;
     }
 
-    public Role() {
-    }
-
-    public Role(int roleId, String name, String title) {
-        this.roleId = roleId;
-        this.name = name;
-        this.title = title;
-    }
 
     @Override
     public int hashCode() {
         return Objects.hash(roleId);
-    }
-
-    public int getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getTitle() {
-        return title;
     }
 }

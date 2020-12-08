@@ -2,8 +2,8 @@ package com.example.monzun_admin.service;
 
 import com.example.monzun_admin.exception.FileIsEmptyException;
 import com.example.monzun_admin.exception.UserByEmailNotFound;
-import com.example.monzun_admin.model.Attachment;
-import com.example.monzun_admin.model.User;
+import com.example.monzun_admin.entities.Attachment;
+import com.example.monzun_admin.entities.User;
 import com.example.monzun_admin.repository.AttachmentRepository;
 import com.example.monzun_admin.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

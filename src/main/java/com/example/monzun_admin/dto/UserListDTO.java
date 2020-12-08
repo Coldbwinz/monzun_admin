@@ -1,6 +1,6 @@
 package com.example.monzun_admin.dto;
 
-import com.example.monzun_admin.model.User;
+import com.example.monzun_admin.entities.User;
 
 public class UserListDTO {
     private Long id;
@@ -13,7 +13,7 @@ public class UserListDTO {
     public UserListDTO(User user) {
         this.id = user.getId();
         this.name = user.getName();
-        this.logo = new AttachmentShortDTO(user.getLogo());
+        this.logo = user.getLogo() != null ? new AttachmentShortDTO(user.getLogo()) : null;
     }
 
     public Long getId() {

@@ -1,7 +1,7 @@
 package com.example.monzun_admin.service;
 
-import com.example.monzun_admin.model.PasswordResetToken;
-import com.example.monzun_admin.model.User;
+import com.example.monzun_admin.entities.PasswordResetToken;
+import com.example.monzun_admin.entities.User;
 import com.example.monzun_admin.repository.PasswordResetTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

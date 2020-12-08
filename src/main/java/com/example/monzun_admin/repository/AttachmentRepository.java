@@ -1,6 +1,6 @@
 package com.example.monzun_admin.repository;
 
-import com.example.monzun_admin.model.Attachment;
+import com.example.monzun_admin.entities.Attachment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

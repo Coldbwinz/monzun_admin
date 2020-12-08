@@ -1,6 +1,6 @@
 package com.example.monzun_admin.controller;
 
-import com.example.monzun_admin.model.Role;
+import com.example.monzun_admin.entities.Role;
 import com.example.monzun_admin.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
