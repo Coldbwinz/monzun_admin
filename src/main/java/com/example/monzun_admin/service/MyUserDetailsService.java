@@ -4,8 +4,6 @@ import com.example.monzun_admin.exception.UserByEmailNotFound;
 import com.example.monzun_admin.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,7 +20,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UserByEmailNotFound {
-        com.example.monzun_admin.model.User user = userRepository.findByEmail(email);
+        com.example.monzun_admin.entities.User user = userRepository.findByEmail(email);
 
         if (user == null) {
             throw new UserByEmailNotFound("User with email " + email+" not found");

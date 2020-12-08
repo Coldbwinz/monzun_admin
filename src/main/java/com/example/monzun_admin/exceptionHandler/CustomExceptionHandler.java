@@ -3,6 +3,7 @@ package com.example.monzun_admin.exceptionHandler;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,7 +20,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
                                                                   HttpStatus status, WebRequest request) {
-
         Map<String, Object> body = new LinkedHashMap<>();
         Map<String, String> fields = new HashMap<>();
         body.put("status", status.value());
@@ -29,6 +29,6 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
                 .forEach(fieldError -> fields.put(fieldError.getField(), fieldError.getDefaultMessage()));
         body.put("errors", fields);
 
-        return new ResponseEntity<>(body, headers, status);
+        return new ResponseEntity<>(body, headers, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }

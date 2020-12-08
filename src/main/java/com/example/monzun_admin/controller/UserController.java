@@ -1,7 +1,7 @@
 package com.example.monzun_admin.controller;
 
 import com.example.monzun_admin.dto.UserDTO;
-import com.example.monzun_admin.model.User;
+import com.example.monzun_admin.entities.User;
 import com.example.monzun_admin.repository.UserRepository;
 import com.example.monzun_admin.dto.UserListDTO;
 import com.example.monzun_admin.request.UserRequest;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/users")
-public class UserController {
+public class UserController extends BaseRestController {
 
     @Autowired
     private UserRepository userRepository;
@@ -44,7 +44,7 @@ public class UserController {
     public ResponseEntity<?> show(@PathVariable Long id) {
         Optional<User> user = userRepository.findById(id);
         if (!user.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
 
         }
         return ResponseEntity.status(HttpStatus.OK).body(new UserDTO(user.get()));
@@ -58,20 +58,15 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@Valid @PathVariable Long id, @RequestBody UserRequest userRequest) {
-        Optional<User> user = userRepository.findById(id);
-        if (!user.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
-        }
-
-        User updatedUSer = userService.update(user.get(), userRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(new UserDTO(updatedUSer));
+        User updatedUser = userService.update(id, userRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(new UserDTO(updatedUser));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         return userService.delete(id)
-                ? ResponseEntity.status(HttpStatus.OK).body(true)
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+                ? ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse())
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
     }
 
     private UserListDTO convertToDto(User user) {

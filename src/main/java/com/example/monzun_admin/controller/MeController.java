@@ -2,8 +2,8 @@ package com.example.monzun_admin.controller;
 
 import com.example.monzun_admin.dto.PasswordChangeDTO;
 import com.example.monzun_admin.exception.UserByEmailNotFound;
-import com.example.monzun_admin.model.Mail;
-import com.example.monzun_admin.model.User;
+import com.example.monzun_admin.entities.Mail;
+import com.example.monzun_admin.entities.User;
 import com.example.monzun_admin.repository.PasswordResetTokenRepository;
 import com.example.monzun_admin.repository.UserRepository;
 import com.example.monzun_admin.service.EmailService;
@@ -26,7 +26,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/me")
-public class MeController {
+public class MeController extends BaseRestController {
     @Autowired
     private UserRepository userRepository;
 
@@ -54,7 +54,7 @@ public class MeController {
     }
 
     @PostMapping("/resetPassword")
-    public ResponseEntity<Boolean> resetPassword(@RequestParam String email) {
+    public ResponseEntity<?> resetPassword(@RequestParam String email) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UserByEmailNotFound("User with email " + email + " not found");
@@ -79,24 +79,24 @@ public class MeController {
             e.printStackTrace();
         }
 
-        return ResponseEntity.ok(true);
+        return ResponseEntity.ok().body(this.getTrueResponse());
     }
 
     @PostMapping("/user/savePassword")
-    public ResponseEntity<Boolean> savePassword(@Valid PasswordChangeDTO passwordChangeDTO) {
+    public ResponseEntity<?> savePassword(@Valid PasswordChangeDTO passwordChangeDTO) {
         boolean result = passwordResetTokenService.validatePasswordResetToken(passwordChangeDTO.getToken());
 
         if (!result) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(false);
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(this.getFalseResponse());
         }
 
-        User user = passwordResetTokenRepository.findByToken(passwordChangeDTO.getToken()).getUser();
+        Long userId = passwordResetTokenRepository.findByToken(passwordChangeDTO.getToken()).getUser().getId();
 
-        if (user != null) {
-            userService.changePassword(user, passwordChangeDTO.getNewPassword());
-            return ResponseEntity.status(HttpStatus.OK).body(false);
+        if (userId != null) {
+            userService.changePassword(userId, passwordChangeDTO.getNewPassword());
+            return ResponseEntity.status(HttpStatus.OK).body(this.getFalseResponse());
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
         }
     }
 }

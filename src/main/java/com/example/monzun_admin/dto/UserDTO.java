@@ -1,7 +1,7 @@
 package com.example.monzun_admin.dto;
 
-import com.example.monzun_admin.model.Role;
-import com.example.monzun_admin.model.User;
+import com.example.monzun_admin.entities.Role;
+import com.example.monzun_admin.entities.User;
 
 import java.util.Date;
 

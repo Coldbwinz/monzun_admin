@@ -1,6 +1,6 @@
 package com.example.monzun_admin.service;
 
-import com.example.monzun_admin.model.Mail;
+import com.example.monzun_admin.entities.Mail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;

@@ -1,6 +1,6 @@
 package com.example.monzun_admin.enums;
 
-import com.example.monzun_admin.model.Role;
+import com.example.monzun_admin.entities.Role;
 
 public enum RoleEnum {
     ADMIN(new Role(1, "admin", "Администратор")),

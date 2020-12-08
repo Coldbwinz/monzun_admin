@@ -1,12 +1,13 @@
 package com.example.monzun_admin.dto;
 
-import com.example.monzun_admin.model.Startup;
+import com.example.monzun_admin.entities.Startup;
 
 import java.util.Date;
 
 public class StartupListDTO {
     private Long id;
     private String name;
+    private AttachmentShortDTO logo;
     private Date createdAt;
     private Date updatedAt;
 
@@ -16,9 +17,11 @@ public class StartupListDTO {
     public StartupListDTO(Startup startup) {
         this.id = startup.getId();
         this.name = startup.getName();
+        this.logo = startup.getLogo() != null ? new AttachmentShortDTO(startup.getLogo()) : null;
         this.createdAt = startup.getCreatedAt();
         this.updatedAt = startup.getUpdatedAt();
     }
+
 
     public Long getId() {
         return id;

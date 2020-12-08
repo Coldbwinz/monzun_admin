@@ -1,6 +1,6 @@
 package com.example.monzun_admin.dto;
 
-import com.example.monzun_admin.model.Startup;
+import com.example.monzun_admin.entities.Startup;
 
 import java.util.Date;
 
@@ -25,7 +25,7 @@ public class StartupDTO {
         this.id = startup.getId();
         this.name = startup.getName();
         this.owner = new UserListDTO(startup.getOwner());
-        this.logo = new AttachmentShortDTO(startup.getLogo());
+        this.logo = startup.getLogo() != null ? new AttachmentShortDTO(startup.getLogo()) : null;
         this.description = startup.getDescription();
         this.businessPlan = startup.getBusinessPlan();
         this.tasks = startup.getTasks();
