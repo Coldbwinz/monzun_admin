@@ -2,3 +2,7 @@ language: java
 jdk:
   - openjdk8
 script: ./mvnw clean install
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database monzun_testing;' -U postgres
