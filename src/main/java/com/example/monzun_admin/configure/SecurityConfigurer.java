@@ -37,7 +37,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class).csrf()
+        http.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class)
+                .csrf()
                 .disable()
                 .authorizeRequests()
                 .antMatchers("/api/auth/login")

@@ -9,5 +9,4 @@ class MonzunAdminApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
