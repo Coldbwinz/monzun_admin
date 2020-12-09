@@ -44,7 +44,7 @@ public class UserRepositoryTest extends AbstractTestCase {
         User user = createTestUserEntity(faker.bothify("???????#@mail.ru"));
         userRepository.saveAndFlush(user);
         Assertions.assertNotNull(user.getId());
-        Assertions.assertTrue(userRepository.existsById(user.getId()));
+        Assertions.assertFalse(userRepository.existsById(user.getId()));
     }
 
     @Test
