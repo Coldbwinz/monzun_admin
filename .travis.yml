@@ -7,5 +7,4 @@ services:
 addons:
   postgresql: '9.6'
 before_script:
-  - psql --command="CREATE USER dev"
-  - psql --command="CREATE DATABASE monzun_testing WITH OWNER = dev;
+  - psql --command="CREATE DATABASE monzun_testing;
