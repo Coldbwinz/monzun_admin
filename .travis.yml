@@ -8,4 +8,4 @@ addons:
 before_script:
   - psql --command="CREATE USER dev"
   - psql --command="CREATE DATABASE monzun_testing WITH OWNER = dev";
-script: ./mvnw deploy
+script: ./mvnw clean test
