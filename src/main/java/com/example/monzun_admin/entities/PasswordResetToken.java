@@ -17,7 +17,8 @@ public class PasswordResetToken {
     private static final int EXPIRATION = Integer.parseInt(System.getenv("TOKEN_EXPIRED_SEC"));
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "token_id")
     private Long id;
     private String token;
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
