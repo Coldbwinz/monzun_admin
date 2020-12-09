@@ -2,15 +2,16 @@ language: java
 jdk:
   - openjdk8
 script: ./mvnw clean install
-addons:
-  apt:
-    packages:
-      - postgresql-12
-      - postgresql-client-12
-before_install:
-  - sudo sed -i 's/port = 5433/port = 5432/' /etc/postgresql/12/main/postgresql.conf
-  - sudo cp /etc/postgresql/{9.3,12}/main/pg_hba.conf
-  - sudo pg_ctlcluster 12 main restart
 before_script:
   - psql --command="CREATE USER ${DB_USER};"
   - psql --command="CREATE DATABASE ${DB_NAME} WITH OWNER = ${DB_USER};"
+before_install:
+  - sudo apt-get update
+  - sudo apt-get --yes remove postgresql\*
+  - sudo apt-get install -y postgresql-11 postgresql-client-11
+  - sudo cp /etc/postgresql/{9.6,11}/main/pg_hba.conf
+  - sudo service postgresql restart 11
+services:
+  - postgresql
+addons:
+  postgresql: "11.2"
