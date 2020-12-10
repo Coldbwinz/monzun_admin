@@ -14,8 +14,11 @@ import java.time.LocalDateTime;
 @Table(name = "password_reset_tokens", schema = "public")
 public class PasswordResetToken {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "token_id")
+    @Column(name = "token_id", updatable = false, nullable = false)
+    @SequenceGenerator(name = "pr_tokens_seq",
+            sequenceName = "password_reset_tokens_token_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "pr_tokens_seq")
     private Long id;
     @Column(name = "token")
     private String token;

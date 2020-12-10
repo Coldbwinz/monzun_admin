@@ -19,8 +19,11 @@ import java.util.Objects;
 public class Tracking {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tracking_id", nullable = false)
+    @Column(name = "tracking_id", nullable = false, updatable = false)
+    @SequenceGenerator(name = "trackings_seq",
+            sequenceName = "trackings_tracking_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "trackings_seq")
     private Long id;
     @Column(name = "name", unique = true, nullable = false)
     private String name;

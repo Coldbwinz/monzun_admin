@@ -16,7 +16,11 @@ import java.util.Date;
 @Table(name = "tracking_requests", schema = "public")
 public class TrackingRequest {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id", nullable = false, updatable = false)
+    @SequenceGenerator(name = "trackings_requests_seq",
+            sequenceName = "tracking_requests_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "trackings_requests_seq")
     private Long id;
     @ManyToOne(targetEntity = Startup.class)
     @JoinColumn(name = "startup_id", nullable = false)

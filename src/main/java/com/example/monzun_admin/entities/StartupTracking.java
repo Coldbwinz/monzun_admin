@@ -16,7 +16,11 @@ import javax.persistence.*;
 public class StartupTracking {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    @SequenceGenerator(name = "startup_trackings_seq",
+            sequenceName = "startup_trackings_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "startup_trackings_seq")
     Long id;
     @ManyToOne(targetEntity = Tracking.class, optional = false)
     @JoinColumn(name = "tracking_id", referencedColumnName = "tracking_id")

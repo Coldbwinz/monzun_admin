@@ -18,8 +18,11 @@ import java.util.Objects;
 @Table(name = "startups", schema = "public")
 public class Startup {
     @Id
-    @Column(name = "startup_id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "startup_id", updatable = false, nullable = false)
+    @SequenceGenerator(name = "startups_seq",
+            sequenceName = "startups_startup_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "startups_seq")
     private Long id;
     @ManyToOne
     @JoinColumn(name = "logo_id")

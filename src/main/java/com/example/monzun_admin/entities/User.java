@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -18,8 +19,11 @@ import java.util.Objects;
 
 public class User {
     @Id
-    @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "users_seq",
+            sequenceName = "users_user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "users_seq")
+    @Column(name = "user_id", updatable = false, nullable = false)
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;
@@ -43,6 +47,8 @@ public class User {
     private Date createdAt;
     @Column(name = "updated_at")
     private Date updatedAt;
+    @OneToMany(cascade = CascadeType.REMOVE)
+    private List<PasswordResetToken> passwordResetTokens;
 
     @Override
     public boolean equals(Object o) {

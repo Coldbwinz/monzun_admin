@@ -15,8 +15,11 @@ import java.util.UUID;
 @Table(name = "attachments", schema = "public")
 public class Attachment {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "attachment_id", updatable = false, nullable = false)
+    @SequenceGenerator(name = "attachments_seq",
+            sequenceName = "attachments_attachment_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "attachments_seq")
     private Long id;
     @Column(name = "uuid")
     private UUID uuid = UUID.randomUUID();

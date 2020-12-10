@@ -20,8 +20,11 @@ import java.util.Objects;
 public class Role {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "role_id")
+    @Column(name = "role_id", updatable = false, nullable = false)
+    @SequenceGenerator(name = "roles_seq",
+            sequenceName = "roles_role_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,
+            generator = "roles_seq")
     private int roleId;
     @Column(name = "name", nullable = false)
     private String name;
