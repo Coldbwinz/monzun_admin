@@ -42,19 +42,13 @@ public class UserRepositoryTest extends AbstractTestCase {
         };
     }
 
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
-        userRepository.deleteAll();
-    }
-
-    @Test
-    public void create() {
-        User user = createTestUserEntity(faker.bothify("???????#@mail.ru"));
-        userRepository.save(user);
-        Assertions.assertNotNull(user.getId());
-        Assertions.assertTrue(userRepository.existsById(user.getId()));
-    }
+//    @Test
+//    public void create() {
+//        User user = createTestUserEntity(faker.bothify("???????#@mail.ru"));
+//        userRepository.save(user);
+//        Assertions.assertNotNull(user.getId());
+//        Assertions.assertTrue(userRepository.existsById(user.getId()));
+//    }
 
     @Test
     public void createDuplicate() {
