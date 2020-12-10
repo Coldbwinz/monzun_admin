@@ -42,14 +42,14 @@ public class UserRepositoryTest extends AbstractTestCase {
         };
     }
 
-    @Test
-    public void create() {
-        String mail = faker.bothify("???????#@mail.ru");
-        User user = createTestUserEntity(mail);
-        userRepository.save(user);
-        Assertions.assertNotNull(user.getId());
-        Assertions.assertTrue(userRepository.existsById(user.getId()));
-    }
+//    @Test
+//    public void create() {
+//        String mail = faker.bothify("???????#@mail.ru");
+//        User user = createTestUserEntity(mail);
+//        userRepository.save(user);
+//        Assertions.assertNotNull(user.getId());
+//        Assertions.assertTrue(userRepository.existsById(user.getId()));
+//    }
 
     @Test
     public void createDuplicate() {
@@ -72,16 +72,16 @@ public class UserRepositoryTest extends AbstractTestCase {
         Assertions.assertNotNull(userRepository.findByEmail(secondEmail));
     }
 
-    @Test
-    public void delete() {
-        String mail = faker.bothify("???????#@mail.ru");
-        User user = createTestUserEntity(mail);
-        userRepository.save(user);
-        Assertions.assertNotNull(user.getId());
-        Assertions.assertTrue(userRepository.existsById(user.getId()));
-        userRepository.deleteById(user.getId());
-        Assertions.assertFalse(userRepository.existsById(user.getId()));
-    }
+//    @Test
+//    public void delete() {
+//        String mail = faker.bothify("???????#@mail.ru");
+//        User user = createTestUserEntity(mail);
+//        userRepository.save(user);
+//        Assertions.assertNotNull(user.getId());
+//        Assertions.assertTrue(userRepository.existsById(user.getId()));
+//        userRepository.deleteById(user.getId());
+//        Assertions.assertFalse(userRepository.existsById(user.getId()));
+//    }
 
     private User createTestUserEntity(String email) {
         User user = new User();
