@@ -15,12 +15,11 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users", schema = "public")
-@SequenceGenerator(name = "user_seq", sequenceName = "users_user_id_seq", allocationSize = 1)
 
 public class User {
     @Id
     @Column(name = "user_id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name", nullable = false)
     private String name;

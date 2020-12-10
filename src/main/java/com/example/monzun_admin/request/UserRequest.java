@@ -1,6 +1,8 @@
 package com.example.monzun_admin.request;
 
 
+import com.example.monzun_admin.validation.rules.UniqueUserEmail;
+
 import javax.validation.constraints.*;
 
 public class UserRequest {
@@ -9,7 +11,7 @@ public class UserRequest {
     private String name;
     @NotNull(message = "Email is required")
     @Email(message = "Email must be valid")
-//    @UniqueUserEmail
+    @UniqueUserEmail
     private String email;
     @NotNull(message = "Phone is required")
     @Pattern(
