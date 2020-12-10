@@ -42,13 +42,14 @@ public class UserRepositoryTest extends AbstractTestCase {
         };
     }
 
-//    @Test
-//    public void create() {
-//        User user = createTestUserEntity(faker.bothify("???????#@mail.ru"));
-//        userRepository.save(user);
-//        Assertions.assertNotNull(user.getId());
-//        Assertions.assertTrue(userRepository.existsById(user.getId()));
-//    }
+    @Test
+    public void create() {
+        String mail = faker.bothify("???????#@mail.ru");
+        User user = createTestUserEntity(mail);
+        userRepository.save(user);
+        Assertions.assertNotNull(user.getId());
+        Assertions.assertTrue(userRepository.existsById(user.getId()));
+    }
 
     @Test
     public void createDuplicate() {
@@ -73,7 +74,8 @@ public class UserRepositoryTest extends AbstractTestCase {
 
     @Test
     public void delete() {
-        User user = createTestUserEntity(faker.bothify("???????#@mail.ru"));
+        String mail = faker.bothify("???????#@mail.ru");
+        User user = createTestUserEntity(mail);
         userRepository.save(user);
         Assertions.assertNotNull(user.getId());
         Assertions.assertTrue(userRepository.existsById(user.getId()));
