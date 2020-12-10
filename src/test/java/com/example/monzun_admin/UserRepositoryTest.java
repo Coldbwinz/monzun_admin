@@ -46,7 +46,7 @@ public class UserRepositoryTest extends AbstractTestCase {
     @Test
     public void create() {
         User user = createTestUserEntity(faker.bothify("???????#@mail.ru"));
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         Assertions.assertNotNull(user.getId());
         Assertions.assertTrue(userRepository.existsById(user.getId()));
     }
@@ -56,7 +56,7 @@ public class UserRepositoryTest extends AbstractTestCase {
         String randomEmail = faker.bothify("???????#@mail.ru");
         User user = createTestUserEntity(randomEmail);
         User duplicateUser = createTestUserEntity(randomEmail);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         Assertions.assertTrue(userRepository.existsById(user.getId()));
         Assertions.assertThrows(DataIntegrityViolationException.class, () -> userRepository.saveAndFlush(duplicateUser));
     }
@@ -68,14 +68,14 @@ public class UserRepositoryTest extends AbstractTestCase {
         userRepository.save(user);
         Assertions.assertNotNull(userRepository.findByEmail(firstEmail));
         user.setEmail(secondEmail);
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         Assertions.assertNotNull(userRepository.findByEmail(secondEmail));
     }
 
     @Test
     public void delete() {
         User user = createTestUserEntity(faker.bothify("???????#@mail.ru"));
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
         Assertions.assertNotNull(user.getId());
         Assertions.assertTrue(userRepository.existsById(user.getId()));
         userRepository.deleteById(user.getId());

@@ -18,3 +18,5 @@ CREATE TABLE users
 INSERT INTO users (user_id, role_id, name, email, password)
 VALUES (1, 1, 'Администратор Александр', 'mngful5@mail.ru',
         '$2y$12$Y2k6ZkxWVlTYU3lnjiTz5.w5piAKxxMsb5uwlsJjga23TmXzxRu5u');
+
+SELECT setval('users_user_id_seq', 1, true);

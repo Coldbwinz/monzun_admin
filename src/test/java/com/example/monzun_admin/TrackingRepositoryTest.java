@@ -44,7 +44,7 @@ public class TrackingRepositoryTest extends AbstractTestCase {
     @Test
     public void create() {
         Tracking tracking = createTestTrackingEntity();
-        trackingRepository.save(tracking);
+        trackingRepository.saveAndFlush(tracking);
         Assertions.assertNotNull(tracking.getId());
         Assertions.assertTrue(trackingRepository.existsById(tracking.getId()));
     }

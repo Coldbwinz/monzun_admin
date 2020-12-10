@@ -37,7 +37,7 @@ public class PasswordResetTokenRepositoryTest extends AbstractTestCase {
         passwordResetToken.setUser(user);
         passwordResetToken.setExpiredAt(LocalDateTime.now());
         passwordResetToken.setToken(UUID.randomUUID().toString());
-        passwordResetTokenRepository.save(passwordResetToken);
+        passwordResetTokenRepository.saveAndFlush(passwordResetToken);
         Assertions.assertNotNull(passwordResetToken.getId());
         Assertions.assertTrue(passwordResetTokenRepository.existsById(passwordResetToken.getId()));
     }
