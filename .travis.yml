@@ -1,11 +1,17 @@
 language: java
 jdk:
-  - openjdk8
+- openjdk8
 services:
-  - postgresql
+- postgresql
+env:
+  matrix:
+  - "-SPRING_DATASOURCE_URL="
+  global:
+  - secure: IYLfuMC0J2kQ35Jc9CMeMR+wLgc4SOVMo1f97R91TkRh7bn3RdTr19cNtpdv65DOtqFDRE280mseQ5GJmCXarLjwGpxknAThTOuYz/Ew3MezCDTwLYD3qB0MSXPpJnqrGSsQwdfAKnYWPvNQtPb15RvOFYWoMoSXXQmZFwYIyhOnC0hVL3ZLaJ+17YoKcIoeO6es8pS093sPdbFBslvvYoFnNGQvde+UJfQx+ZA34Xc6BrZXEWP4jMOqudIzMzAl43RJbiJy6oHE8Fqjqz2buyZiUZJew4+N+2AEWBUVWqO8eI/WkX1MYKBw+T+0ajb7O2LCncdZy6rt3FYcyztCunIgnLsVrN9w4GXEq3DWmaFN7Jz2ByvB6kyxZ9XAzmk1BYMN0uyyxgNTfNWhFv6vZw8s6KsvABhEg/x9KKo3krjqU6hqDCxlnnvHMyTq3NOzVa/2r/VlJ9usnJppd6TiP+IDNClbjqheXyhXJoYlSiJUPeWic7Ab7vt247qcZ8FBbSxmprFnXFFZaoUhmIqDgn+dsIeOP1CgbvebUqvXVj4fbA9JhLSib2Cdsgt9fefRUfZYLG/7ZCmTBWKjs5xaNc2TFUBKUhRwgKW+v9KfrtWbkFgtn48K9Ar24PckyKzniLF0umWDr4rECSgmRSA+gNCqrO/acVtvUXyN1ImKN3Y=
+  - secure: M2mhifVPSz6h3Hu14a7CpXdgRHPeScN0ejCN01yx1HUNxR3wUvTbg/tY8aUDvhNfCVxJDSpzZl2kt8gJN9IkWsGI/qIzH5EdimQ2PARcaqBDWsmOlOBLQ4nDLDuXs98h2uvZvBNiSdspRelURRDQ+VVdWuw60ba0JX2JyHHkwrVIeZDOZuVCm50oGtJ9zqemO4IsEk8hQqGeZKpm2Pux9lLjW+nT94uJryeeaUNgD5gxQ9lMrOsEo/94s5sNQR5ly7EcP8Bb3jUZ4F6AvQTLdM4A5DULdPDk2zsEgS2FnAMa1mTZl++QwinkQpUQJoS2v6mK5XKCQgQz08PPkJNqVb0kTldLa0mNvxlPxNArX5tzwwMkHOGO5jKMPBmeFk7POc1GcJYHW/rSz5uXWL0qk3SlNZnc7xuoEFtundqNhBbNEAuc2XOcXqpUr6A2VMxg1Azn76xfXdUzRWxTRUpaGlKczayCmPjWlkUenZZyY/19nDchp5tFT9gjcVrThbanNH35k5YwDKIiisAqsLJOtFRbI5rcUjyNtcMKRkFxCahdXxOq4hD6o2WuShbC3WjlDJc2r2CCk1B6GaKMAYyPmG5I+z5fA8os+G/O/XjIH9Q+lBoE7rTlMnynAiwdvUVAqFeplwl/ihORmh6q1mjTVQRIEAd1C5XOzyEg/1bWHjY=
 addons:
   postgresql: '9.6'
 before_script:
-  - psql --command="CREATE USER dev"
-  - psql --command="CREATE DATABASE monzun_testing WITH OWNER = dev";
-script: ./mvnw clean test
+- psql --command="CREATE USER dev"
+- psql --command="CREATE DATABASE monzun_testing WITH OWNER = dev";
+script: "./mvnw clean install

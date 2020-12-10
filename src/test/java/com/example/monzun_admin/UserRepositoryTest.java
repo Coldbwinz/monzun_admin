@@ -5,26 +5,24 @@ import com.example.monzun_admin.enums.RoleEnum;
 import com.example.monzun_admin.repository.UserRepository;
 import com.tngtech.java.junit.dataprovider.DataProvider;
 import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContextManager;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.web.WebAppConfiguration;
 
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
+
+@AutoConfigureTestDatabase(replace = NONE)
 @RunWith(DataProviderRunner.class)
-@TestPropertySource(locations = "classpath:application-test.properties")
-@WebAppConfiguration
-@ContextConfiguration(classes=MonzunAdminApplication.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ContextConfiguration
 @DataJpaTest
 public class UserRepositoryTest extends AbstractTestCase {
 
@@ -62,8 +60,8 @@ public class UserRepositoryTest extends AbstractTestCase {
         Assertions.assertThrows(DataIntegrityViolationException.class, () -> userRepository.saveAndFlush(duplicateUser));
     }
 
-    @Test()
-    @UseDataProvider("randomEmailsWhenUpdating")
+    @ParameterizedTest
+    @MethodSource("randomEmailsWhenUpdating")
     public void update(String firstEmail, String secondEmail) {
         User user = createTestUserEntity(firstEmail);
         userRepository.save(user);

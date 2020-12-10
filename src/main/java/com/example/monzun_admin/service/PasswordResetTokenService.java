@@ -6,7 +6,7 @@ import com.example.monzun_admin.repository.PasswordResetTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 
 @Service
 public class PasswordResetTokenService {
@@ -15,7 +15,9 @@ public class PasswordResetTokenService {
     private PasswordResetTokenRepository passwordResetTokenRepository;
 
     public void createPasswordResetTokenForUser(User user, String token) {
-        PasswordResetToken myToken = new PasswordResetToken(token, user);
+        PasswordResetToken myToken = new PasswordResetToken();
+        myToken.setUser(user);
+        myToken.setToken(token);
         passwordResetTokenRepository.save(myToken);
     }
 
@@ -26,6 +28,6 @@ public class PasswordResetTokenService {
     }
 
     private boolean isTokenExpired(PasswordResetToken token) {
-        return token.getExpiredAt().before(Calendar.getInstance().getTime());
+        return token.getExpiredAt().isBefore(LocalDateTime.now());
     }
 }
