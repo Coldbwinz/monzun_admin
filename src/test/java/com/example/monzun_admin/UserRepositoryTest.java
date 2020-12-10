@@ -42,6 +42,12 @@ public class UserRepositoryTest extends AbstractTestCase {
         };
     }
 
+    @Override
+    public void setUp() throws Exception {
+        super.setUp();
+        userRepository.deleteAll();
+    }
+
     @Test
     public void create() {
         User user = createTestUserEntity(faker.bothify("???????#@mail.ru"));
