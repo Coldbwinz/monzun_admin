@@ -4,7 +4,7 @@ jdk:
 services:
 - postgresql
 addons:
-  postgresql: '9.6'
+  postgresql: '10.15'
 before_script:
 - psql --command="CREATE USER dev"
 - psql --command="CREATE DATABASE monzun_testing WITH OWNER = dev";
