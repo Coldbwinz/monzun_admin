@@ -1,54 +1,28 @@
 package com.example.monzun_admin.dto;
 
 import com.example.monzun_admin.entities.Attachment;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Setter
+@Getter
+@NoArgsConstructor
 public class AttachmentShortDTO {
     private UUID uuid;
     private String url;
     private String originalFilename;
-    private Date createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+    private LocalDateTime createdAt;
 
     public AttachmentShortDTO(Attachment attachment) {
         this.uuid = attachment.getUuid();
         this.url = attachment.getUrl();
         this.originalFilename = attachment.getOriginalFilename();
         this.createdAt = attachment.getCreatedAt();
-    }
-
-    public AttachmentShortDTO() {}
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getOriginalFilename() {
-        return originalFilename;
-    }
-
-    public void setOriginalFilename(String originalFilename) {
-        this.originalFilename = originalFilename;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
     }
 }

@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -35,6 +35,5 @@ public class Attachment {
     @Column(name = "path", nullable = false)
     private String path;
     @Column(name = "created_at", nullable = false)
-    private Date createdAt;
-
+    private LocalDateTime createdAt;
 }

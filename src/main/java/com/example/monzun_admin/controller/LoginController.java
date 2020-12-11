@@ -1,45 +1,62 @@
 package com.example.monzun_admin.controller;
 
-import com.example.monzun_admin.enums.RoleEnum;
-import com.example.monzun_admin.entities.User;
-import com.example.monzun_admin.repository.UserRepository;
 import com.example.monzun_admin.dto.AuthDTO;
-import com.example.monzun_admin.security.JwtUtil;
+import com.example.monzun_admin.entities.User;
+import com.example.monzun_admin.enums.RoleEnum;
+import com.example.monzun_admin.repository.UserRepository;
 import com.example.monzun_admin.request.AuthRequest;
+import com.example.monzun_admin.security.JwtUtil;
 import com.example.monzun_admin.service.MyUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
+@Valid
 @RestController
 @RequestMapping("api/auth")
-public class LoginController {
+public class LoginController extends BaseRestController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final MyUserDetailsService myUserDetailsService;
+    private final JwtUtil jwtTokenUtil;
 
-    @Autowired
-    private UserRepository userRepository;
+    public LoginController(
+            AuthenticationManager authenticationManager,
+            UserRepository userRepository,
+            MyUserDetailsService myUserDetailsService,
+            JwtUtil jwtTokenUtil
+    ) {
+        this.authenticationManager = authenticationManager;
+        this.userRepository = userRepository;
+        this.myUserDetailsService = myUserDetailsService;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
-    @Autowired
-    private MyUserDetailsService myUserDetailsService;
-
-    @Autowired
-    private JwtUtil jwtTokenUtil;
-
+    /**
+     * Создание JWT токена
+     * @param request credentials пользователя
+     * @return JSON
+     */
     @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthRequest request) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody AuthRequest request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
         } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password", e);
+//            throw new Exception("Incorrect username or password", e); log
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                    .body(this.getErrorMessage("password", "invalid password"));
         }
 
         /*

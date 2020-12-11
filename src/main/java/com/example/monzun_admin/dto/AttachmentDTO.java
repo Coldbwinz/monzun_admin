@@ -1,10 +1,17 @@
 package com.example.monzun_admin.dto;
 
 import com.example.monzun_admin.entities.Attachment;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class AttachmentDTO {
     private UUID uuid;
     private String fileName;
@@ -12,7 +19,8 @@ public class AttachmentDTO {
     private String originalFilename;
     private String path;
     private UserListDTO owner;
-    private Date createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+    private LocalDateTime createdAt;
 
     public AttachmentDTO(Attachment attachment) {
         this.uuid = attachment.getUuid();
@@ -22,64 +30,5 @@ public class AttachmentDTO {
         this.path = attachment.getPath();
         this.owner = new UserListDTO(attachment.getOwner());
         this.createdAt = attachment.getCreatedAt();
-    }
-
-    public AttachmentDTO() {
-    }
-
-    public UUID getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public String getOriginalFilename() {
-        return originalFilename;
-    }
-
-    public void setOriginalFilename(String originalFilename) {
-        this.originalFilename = originalFilename;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }
-
-    public UserListDTO getOwner() {
-        return owner;
-    }
-
-    public void setOwner(UserListDTO owner) {
-        this.owner = owner;
-    }
-
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
     }
 }

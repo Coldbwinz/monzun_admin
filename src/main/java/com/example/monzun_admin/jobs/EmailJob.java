@@ -4,14 +4,16 @@ import com.example.monzun_admin.entities.Mail;
 import com.example.monzun_admin.service.EmailService;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import javax.mail.MessagingException;
 
 public class EmailJob extends QuartzJobBean {
-    @Autowired
-    private EmailService service;
+    private final EmailService service;
+
+    public EmailJob(EmailService service) {
+        this.service = service;
+    }
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {

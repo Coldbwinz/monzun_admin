@@ -5,7 +5,6 @@ import com.example.monzun_admin.dto.StartupListDTO;
 import com.example.monzun_admin.entities.Startup;
 import com.example.monzun_admin.repository.StartupRepository;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,12 +17,19 @@ import java.util.stream.Collectors;
 @RequestMapping("api/startups")
 public class StartupController extends BaseRestController {
 
-    @Autowired
-    private StartupRepository startupRepository;
+    private final StartupRepository startupRepository;
+    private final ModelMapper modelMapper;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    public StartupController(StartupRepository startupRepository, ModelMapper modelMapper) {
+        this.startupRepository = startupRepository;
+        this.modelMapper = modelMapper;
+    }
 
+    /**
+     * Список стартапов
+     *
+     * @return JSON
+     */
     @GetMapping()
     public ResponseEntity<List<StartupListDTO>> list() {
         List<Startup> startups = startupRepository.findAll();
@@ -34,6 +40,12 @@ public class StartupController extends BaseRestController {
         return ResponseEntity.ok().body(startupListDTOS);
     }
 
+    /**
+     * Конкретный стартап
+     *
+     * @param id ID стартапа
+     * @return JSON
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> show(@PathVariable Long id) {
         Optional<Startup> startup = startupRepository.findById(id);
@@ -44,6 +56,12 @@ public class StartupController extends BaseRestController {
         return ResponseEntity.status(HttpStatus.OK).body(new StartupDTO(startup.get()));
     }
 
+    /**
+     * Удаление стартапа
+     *
+     * @param id ID стартапа
+     * @return JSON
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         Optional<Startup> startup = startupRepository.findById(id);

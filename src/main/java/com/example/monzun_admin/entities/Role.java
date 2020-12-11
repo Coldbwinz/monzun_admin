@@ -39,7 +39,6 @@ public class Role {
         return roleId == role.roleId;
     }
 
-
     @Override
     public int hashCode() {
         return Objects.hash(roleId);

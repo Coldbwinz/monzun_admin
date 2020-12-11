@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -37,9 +38,9 @@ public class Tracking {
     @Column(name = "ended_at", nullable = false)
     private Date endedAt;
     @Column(name = "created_at", updatable = false)
-    private Date createdAt;
+    private LocalDateTime createdAt;
     @Column(name = "updated_at", insertable = false)
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "startup_trackings",

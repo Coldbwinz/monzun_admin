@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+
+/**
+ * Фильтр для Same-Origin Security Police. Разрешает междоменные запросы любого http verb
+ */
 @Component
 public class CorsFilter extends OncePerRequestFilter {
 

@@ -2,7 +2,6 @@ package com.example.monzun_admin.service;
 
 import com.example.monzun_admin.jobs.EmailJob;
 import org.quartz.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -11,8 +10,11 @@ import java.util.UUID;
 
 @Service
 public class JobService {
-    @Autowired
-    private Scheduler scheduler;
+    private final Scheduler scheduler;
+
+    public JobService(Scheduler scheduler) {
+        this.scheduler = scheduler;
+    }
 
     public void schedule(JobDataMap jobDataMap) throws SchedulerException {
         JobDetail jobDetail = buildJobDetail(jobDataMap);

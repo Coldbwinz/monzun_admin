@@ -1,7 +1,6 @@
 package com.example.monzun_admin.service;
 
 import com.example.monzun_admin.entities.Mail;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -17,15 +16,23 @@ import java.util.Map;
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender emailSender;
+    private final JavaMailSender emailSender;
+    private final Environment environment;
+    private final SpringTemplateEngine templateEngine;
 
-    @Autowired
-    private Environment environment;
+    public EmailService(JavaMailSender emailSender, Environment environment, SpringTemplateEngine templateEngine) {
+        this.emailSender = emailSender;
+        this.environment = environment;
+        this.templateEngine = templateEngine;
+    }
 
-    @Autowired
-    private SpringTemplateEngine templateEngine;
-
+    /**
+     * Отправка email по указанному шаблону
+     *
+     * @param mail     email
+     * @param template шаблон письма
+     * @throws MessagingException MessagingException
+     */
     public void sendEmail(Mail mail, String template) throws MessagingException {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message,
@@ -45,6 +52,14 @@ public class EmailService {
         emailSender.send(message);
     }
 
+    /**
+     * Создание письма
+     *
+     * @param receiverMail email получателя
+     * @param subject      тема письма
+     * @param props        Map<String, Object> доп.данные
+     * @return Mail
+     */
     public Mail createMail(
             String receiverMail,
             String subject,

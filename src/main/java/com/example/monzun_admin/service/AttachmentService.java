@@ -1,12 +1,11 @@
 package com.example.monzun_admin.service;
 
-import com.example.monzun_admin.exception.FileIsEmptyException;
-import com.example.monzun_admin.exception.UserByEmailNotFound;
 import com.example.monzun_admin.entities.Attachment;
 import com.example.monzun_admin.entities.User;
+import com.example.monzun_admin.exception.FileIsEmptyException;
+import com.example.monzun_admin.exception.UserByEmailNotFound;
 import com.example.monzun_admin.repository.AttachmentRepository;
 import com.example.monzun_admin.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,20 +19,29 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
 public class AttachmentService {
 
-    @Autowired
-    private AttachmentRepository attachmentRepository;
+    private final AttachmentRepository attachmentRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    UserRepository userRepository;
+    public AttachmentService(AttachmentRepository attachmentRepository, UserRepository userRepository) {
+        this.attachmentRepository = attachmentRepository;
+        this.userRepository = userRepository;
+    }
 
     private final String UPLOAD_PATH = System.getProperty("user.dir") + "/attachments/";
 
+    /**
+     * Хранение файлы и создание записи в БД
+     *
+     * @param file file
+     * @return Attachment файл
+     * @throws IOException IOException
+     */
     public Attachment storeFile(MultipartFile file) throws IOException {
         Attachment attachment;
         if (file.isEmpty()) {
@@ -50,6 +58,13 @@ public class AttachmentService {
         return attachment;
     }
 
+    /**
+     * Файл для скачивания по Attachment UUID
+     *
+     * @param Uuid UUID файла
+     * @return Resource
+     * @throws FileNotFoundException FileNotFoundException
+     */
     public Resource download(UUID Uuid) throws FileNotFoundException {
         try {
             Attachment attachment = attachmentRepository.findByuuid(Uuid);
@@ -65,6 +80,13 @@ public class AttachmentService {
         }
     }
 
+    /**
+     * Удаление файла (физическое и удаление записи из БД)
+     *
+     * @param uuid UUID Attachment
+     * @return boolean
+     * @throws IOException IOException
+     */
     public boolean delete(UUID uuid) throws IOException {
         Attachment attachment = attachmentRepository.findByuuid(uuid);
 
@@ -82,11 +104,24 @@ public class AttachmentService {
         return true;
     }
 
+    /**
+     * Физическое сохранение файла
+     *
+     * @param file файл
+     * @throws IOException IOException
+     */
     private void saveFile(MultipartFile file) throws IOException {
         Path path = Paths.get(UPLOAD_PATH + file.getOriginalFilename());
         Files.write(path, file.getBytes());
     }
 
+
+    /**
+     * Запись Attachment в БД
+     *
+     * @param file файл
+     * @return Attachment
+     */
     private Attachment saveAttachment(MultipartFile file) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User owner = userRepository.findByEmail(email);
@@ -104,7 +139,7 @@ public class AttachmentService {
         attachment.setPath(UPLOAD_PATH + file.getOriginalFilename());
         attachment.setOwner(owner);
         attachment.setFilename(file.getName());
-        attachment.setCreatedAt(new Date());
+        attachment.setCreatedAt(LocalDateTime.now());
         attachmentRepository.save(attachment);
 
         return attachment;

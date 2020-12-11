@@ -9,4 +9,5 @@ import java.util.UUID;
 @Repository
 public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
     Attachment findByuuid(UUID uuid);
+    boolean existsAllByUuid(UUID uuid);
 }

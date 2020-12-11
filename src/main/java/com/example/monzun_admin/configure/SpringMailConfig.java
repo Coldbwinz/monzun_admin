@@ -4,14 +4,15 @@ package com.example.monzun_admin.configure;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
 import java.nio.charset.StandardCharsets;
 
-
+/**
+ * Mail конфигуратор. Устанавливает пути до mail templates и другие свойства.
+ */
 @Configuration
 public class SpringMailConfig {
 

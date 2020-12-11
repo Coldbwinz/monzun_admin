@@ -2,7 +2,6 @@ package com.example.monzun_admin.configure;
 
 import com.example.monzun_admin.security.JwtRequestFilter;
 import com.example.monzun_admin.service.MyUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,11 +17,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
-    @Autowired
-    private MyUserDetailsService myUserDetailsService;
+    private final MyUserDetailsService myUserDetailsService;
+    private final JwtRequestFilter jwtRequestFilter;
 
-    @Autowired
-    private JwtRequestFilter jwtRequestFilter;
+    public SecurityConfigurer(MyUserDetailsService myUserDetailsService, JwtRequestFilter jwtRequestFilter) {
+        this.myUserDetailsService = myUserDetailsService;
+        this.jwtRequestFilter = jwtRequestFilter;
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -41,7 +42,12 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
                 .csrf()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/api/auth/login")
+                .antMatchers(
+                        "/api/auth/login",
+                        "/swagger-resources/**",
+                        "/swagger-ui.html",
+                        "/v2/api-docs",
+                        "/webjars/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

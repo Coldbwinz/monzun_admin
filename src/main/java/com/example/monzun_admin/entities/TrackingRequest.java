@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -29,5 +29,5 @@ public class TrackingRequest {
     @JoinColumn(name = "tracking_id", nullable = false)
     private Tracking tracking;
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 }

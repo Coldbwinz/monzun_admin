@@ -2,11 +2,12 @@ package com.example.monzun_admin.dto;
 
 import com.example.monzun_admin.entities.Role;
 import com.example.monzun_admin.entities.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -20,8 +21,10 @@ public class UserDTO {
     private String blockReason;
     private AttachmentShortDTO logo;
     private Role role;
-    private Date createdAt;
-    private Date updatedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updatedAt;
 
     public UserDTO(User user) {
         this.id = user.getId();

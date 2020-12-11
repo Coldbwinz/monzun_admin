@@ -2,9 +2,17 @@ package com.example.monzun_admin.request;
 
 
 import com.example.monzun_admin.validation.rules.UniqueUserEmail;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
+@Getter
+@Setter
+@NoArgsConstructor
 public class UserRequest {
 
     @NotNull(message = "Name is required")
@@ -21,47 +29,4 @@ public class UserRequest {
     private String phone;
     private boolean isBlocked;
     private String blockReason;
-
-    public UserRequest() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public boolean isBlocked() {
-        return isBlocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        isBlocked = blocked;
-    }
-
-    public String getBlockReason() {
-        return blockReason;
-    }
-
-    public void setBlockReason(String blockReason) {
-        this.blockReason = blockReason;
-    }
 }

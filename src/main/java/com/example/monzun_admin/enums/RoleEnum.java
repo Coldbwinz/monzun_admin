@@ -9,7 +9,6 @@ public enum RoleEnum {
 
     private final Role role;
 
-
     RoleEnum(Role role) {
         this.role = role;
     }
