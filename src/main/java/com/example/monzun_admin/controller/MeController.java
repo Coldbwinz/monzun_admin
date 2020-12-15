@@ -2,7 +2,7 @@ package com.example.monzun_admin.controller;
 
 import com.example.monzun_admin.entities.Mail;
 import com.example.monzun_admin.entities.User;
-import com.example.monzun_admin.exception.UserByEmailNotFound;
+import com.example.monzun_admin.exception.UserByEmailNotFoundException;
 import com.example.monzun_admin.repository.PasswordResetTokenRepository;
 import com.example.monzun_admin.repository.UserRepository;
 import com.example.monzun_admin.request.PasswordChangeRequest;
@@ -61,7 +61,7 @@ public class MeController extends BaseRestController {
      * @param response Response
      * @throws IOException IOException
      */
-    @GetMapping("/user/changePassword")
+    @GetMapping("/changePassword")
     public void showChangePasswordPage(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
         boolean isValid = passwordResetTokenService.isValidPasswordResetToken(token);
         String redirectUrl = isValid ? "1" : "2"; //TODO: need links
@@ -79,7 +79,7 @@ public class MeController extends BaseRestController {
     public ResponseEntity<?> resetPassword(@RequestParam String email) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new UserByEmailNotFound("User with email " + email + " not found");
+            throw new UserByEmailNotFoundException("User with email " + email + " not found");
         }
         String token = UUID.randomUUID().toString();
         passwordResetTokenService.createPasswordResetTokenForUser(user, token);
@@ -110,7 +110,7 @@ public class MeController extends BaseRestController {
      * @param passwordChangeRequest структура параметров при запросе
      * @return JSON
      */
-    @PostMapping("/user/savePassword")
+    @PostMapping("/savePassword")
     public ResponseEntity<?> savePassword(@Valid PasswordChangeRequest passwordChangeRequest) {
         boolean result = passwordResetTokenService.isValidPasswordResetToken(passwordChangeRequest.getToken());
 

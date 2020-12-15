@@ -3,7 +3,7 @@ package com.example.monzun_admin.service;
 import com.example.monzun_admin.entities.Attachment;
 import com.example.monzun_admin.entities.User;
 import com.example.monzun_admin.exception.FileIsEmptyException;
-import com.example.monzun_admin.exception.UserByEmailNotFound;
+import com.example.monzun_admin.exception.UserByEmailNotFoundException;
 import com.example.monzun_admin.repository.AttachmentRepository;
 import com.example.monzun_admin.repository.UserRepository;
 import org.springframework.core.io.Resource;
@@ -48,12 +48,8 @@ public class AttachmentService {
             throw new FileIsEmptyException("File is empty " + file.getName());
         }
 
-        try {
-            attachment = this.saveAttachment(file);
-            saveFile(file);
-        } catch (IOException e) {
-            throw e;
-        }
+        attachment = this.saveAttachment(file);
+        saveFile(file);
 
         return attachment;
     }
@@ -94,12 +90,8 @@ public class AttachmentService {
             return false;
         }
 
-        try {
-            Files.delete(Paths.get(attachment.getPath()));
-            attachmentRepository.delete(attachment);
-        } catch (IOException e) {
-            throw e;
-        }
+        Files.delete(Paths.get(attachment.getPath()));
+        attachmentRepository.delete(attachment);
 
         return true;
     }
@@ -127,7 +119,7 @@ public class AttachmentService {
         User owner = userRepository.findByEmail(email);
 
         if (owner == null) {
-            throw new UserByEmailNotFound("User with email " + email + " not found");
+            throw new UserByEmailNotFoundException("User with email " + email + " not found");
         }
 
         String baseURL = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();

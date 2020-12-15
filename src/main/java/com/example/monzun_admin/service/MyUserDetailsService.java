@@ -1,6 +1,6 @@
 package com.example.monzun_admin.service;
 
-import com.example.monzun_admin.exception.UserByEmailNotFound;
+import com.example.monzun_admin.exception.UserByEmailNotFoundException;
 import com.example.monzun_admin.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.User;
@@ -21,11 +21,11 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UserByEmailNotFound {
+    public UserDetails loadUserByUsername(String email) throws UserByEmailNotFoundException {
         com.example.monzun_admin.entities.User user = userRepository.findByEmail(email);
 
         if (user == null) {
-            throw new UserByEmailNotFound("User with email " + email+" not found");
+            throw new UserByEmailNotFoundException("User with email " + email+" not found");
         }
 
         return new User(
