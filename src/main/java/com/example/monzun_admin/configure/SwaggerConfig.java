@@ -1,6 +1,5 @@
 package com.example.monzun_admin.configure;
 
-import com.example.monzun_admin.controller.UserController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -22,7 +21,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     @Bean
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2)
-                .select().apis(RequestHandlerSelectors.basePackage(UserController.class.getPackage().getName()))
+                .select().apis(RequestHandlerSelectors.any())
                 .paths(regex("/api.*"))
                 .build();
     }
