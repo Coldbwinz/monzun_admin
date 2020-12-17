@@ -1,5 +1,7 @@
 package com.example.monzun_admin.entities;
 
+import com.example.monzun_admin.dto.AttachmentShortDTO;
+import com.example.monzun_admin.enums.AttachmentPolytableTypeConstants;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,6 +50,8 @@ public class Startup {
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+    @Transient
+    private List<AttachmentShortDTO> attachmentsDTO;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -67,5 +71,14 @@ public class Startup {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    /**
+     * Polytable type стартапа
+     *
+     * @return String
+     */
+    public String getPolytableType() {
+        return AttachmentPolytableTypeConstants.STARTUP.getType();
     }
 }

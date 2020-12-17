@@ -18,6 +18,8 @@ public class MonzunAdminApplication {
 
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+        ModelMapper mm = new ModelMapper();
+        mm.getConfiguration().setAmbiguityIgnored(true);
+        return mm;
     }
 }

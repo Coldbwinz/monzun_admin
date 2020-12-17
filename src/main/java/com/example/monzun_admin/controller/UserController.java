@@ -48,7 +48,7 @@ public class UserController extends BaseRestController {
     public ResponseEntity<?> show(@PathVariable Long id) {
         Optional<User> possibleUser = userRepository.findById(id);
         if (!possibleUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         }
         return ResponseEntity.status(HttpStatus.OK).body(new UserDTO(possibleUser.get()));
@@ -89,6 +89,6 @@ public class UserController extends BaseRestController {
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return userService.delete(id)
                 ? ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse())
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 }

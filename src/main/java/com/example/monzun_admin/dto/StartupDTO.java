@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,11 +24,10 @@ public class StartupDTO {
     private String useArea;
     private String points;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-
     private LocalDateTime createdAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
-
     private LocalDateTime updatedAt;
+    private List<AttachmentShortDTO> attachments;
 
     public StartupDTO(Startup startup) {
         this.id = startup.getId();
@@ -42,5 +42,6 @@ public class StartupDTO {
         this.useArea = startup.getUseArea();
         this.createdAt = startup.getCreatedAt();
         this.updatedAt = startup.getUpdatedAt();
+        this.attachments = startup.getAttachmentsDTO();
     }
 }

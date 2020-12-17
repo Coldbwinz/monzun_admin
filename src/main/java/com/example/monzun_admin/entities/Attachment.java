@@ -25,6 +25,10 @@ public class Attachment {
     private UUID uuid = UUID.randomUUID();
     @Column(name = "url")
     private String url;
+    @Column(name = "polytable_type")
+    private String polytableType;
+    @Column(name = "polytable_id", insertable = false, updatable = false)
+    private Long polytableId;
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;

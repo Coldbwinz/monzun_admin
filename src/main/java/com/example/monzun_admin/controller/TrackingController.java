@@ -67,7 +67,7 @@ public class TrackingController extends BaseRestController {
     public ResponseEntity<?> show(@PathVariable Long id) {
         Optional<Tracking> possilbeTracking = trackingRepository.findById(id);
         if (!possilbeTracking.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(trackingService.getTracking(possilbeTracking.get()));
@@ -108,7 +108,7 @@ public class TrackingController extends BaseRestController {
     public ResponseEntity<?> delete(@PathVariable Long id) {
         return trackingService.delete(id)
                 ? ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse())
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
+                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
     /**
@@ -131,7 +131,7 @@ public class TrackingController extends BaseRestController {
         Optional<User> possibleTracker = userRepository.findById(trackerId);
 
         if (!possibleStartup.isPresent() || !possibleTracking.isPresent() || !possibleTracker.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         Optional<StartupTracking> startupTracking = startupTrackingRepository.findByTrackingAndStartup(
@@ -140,7 +140,7 @@ public class TrackingController extends BaseRestController {
         );
 
         if (!startupTracking.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(this.getFalseResponse());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         try {
@@ -165,7 +165,7 @@ public class TrackingController extends BaseRestController {
         Optional<Startup> possibleStartup = startupRepository.findById(startupId);
 
         if (!possibleTracking.isPresent() || !possibleStartup.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
         Optional<StartupTracking> startupTracking = startupTrackingRepository.findByTrackingAndStartup(
@@ -174,7 +174,7 @@ public class TrackingController extends BaseRestController {
         );
 
         if (!startupTracking.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(this.getFalseResponse());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
         trackingService.removeStartup(possibleTracking.get(), possibleStartup.get());

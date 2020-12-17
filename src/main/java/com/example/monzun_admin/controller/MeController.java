@@ -111,20 +111,20 @@ public class MeController extends BaseRestController {
      * @return JSON
      */
     @PostMapping("/savePassword")
-    public ResponseEntity<?> savePassword(@Valid PasswordChangeRequest passwordChangeRequest) {
+    public ResponseEntity<?> savePassword(@Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
         boolean result = passwordResetTokenService.isValidPasswordResetToken(passwordChangeRequest.getToken());
 
         if (!result) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(this.getFalseResponse());
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
         }
 
         Long userId = passwordResetTokenRepository.findByToken(passwordChangeRequest.getToken()).getUser().getId();
 
         if (userId != null) {
             userService.changePassword(userId, passwordChangeRequest.getNewPassword());
-            return ResponseEntity.status(HttpStatus.OK).body(this.getFalseResponse());
+            return ResponseEntity.status(HttpStatus.OK).build();
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(this.getFalseResponse());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }
