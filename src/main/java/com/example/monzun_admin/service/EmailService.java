@@ -41,7 +41,6 @@ public class EmailService {
 
         Context context = new Context();
         context.setVariables(mail.getProps());
-
         String html = templateEngine.process(template, context);
 
         helper.setTo(mail.getMailTo());

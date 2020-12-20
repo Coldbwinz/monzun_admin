@@ -9,7 +9,6 @@ import com.example.monzun_admin.request.PasswordChangeRequest;
 import com.example.monzun_admin.service.EmailService;
 import com.example.monzun_admin.service.PasswordResetTokenService;
 import com.example.monzun_admin.service.UserService;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -33,7 +32,6 @@ import java.util.UUID;
 public class MeController extends BaseRestController {
     private final UserRepository userRepository;
     private final UserService userService;
-    private final Environment environment;
     private final EmailService emailService;
     private final PasswordResetTokenService passwordResetTokenService;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
@@ -41,14 +39,12 @@ public class MeController extends BaseRestController {
     public MeController(
             UserRepository userRepository,
             UserService userService,
-            Environment environment,
             EmailService emailService,
             PasswordResetTokenService passwordResetTokenService,
             PasswordResetTokenRepository passwordResetTokenRepository
     ) {
         this.userRepository = userRepository;
         this.userService = userService;
-        this.environment = environment;
         this.emailService = emailService;
         this.passwordResetTokenService = passwordResetTokenService;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
@@ -64,7 +60,7 @@ public class MeController extends BaseRestController {
     @GetMapping("/changePassword")
     public void showChangePasswordPage(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
         boolean isValid = passwordResetTokenService.isValidPasswordResetToken(token);
-        String redirectUrl = isValid ? "1" : "2"; //TODO: need links
+        String redirectUrl = isValid ? "1" : "2"; //TODO: links
 
         response.sendRedirect(redirectUrl);
     }
@@ -86,12 +82,11 @@ public class MeController extends BaseRestController {
 
         StringBuilder url = new StringBuilder(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString());
         url.append("api/me/confirmReset?token=");
-        url.append(token);
+        url.append(token); //TODO:links
 
         Map<String, Object> props = new HashMap<>();
         props.put("name", user.getName());
-        props.put("button-url", url);
-        props.put("sign", environment.getProperty("APP_NAME"));
+        props.put("url", url);
 
         Mail mail = emailService.createMail(user.getEmail(), "Reset password", props);
 
