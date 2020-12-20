@@ -3,11 +3,11 @@
       xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Запрос смены пароля</title>
+    <title>Заявка на набор одобрена</title>
 </head>
 <body th:inline="text">
 <p> Здравствуйте, <span th:text="${name}"></span>!
-    <br> Нажмите <a href="${url}">сюда</a>, чтобы сменить пароль.
+    <br> Заявка в <span th:text="${tracking.name}"></span> одобрена. Нажмите <a href="${url}">сюда</a>, чтобы перейти к набору.
 </p>
 </body>
 </html>

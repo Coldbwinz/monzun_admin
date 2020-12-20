@@ -37,7 +37,7 @@ public class JobService {
                 .withIdentity(jobDetail.getKey().getName())
                 .withDescription(jobDetail.getDescription())
                 .startAt(Date.from(startAt.toInstant()))
-                .withSchedule(SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
+                .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(10))
                 .build();
     }
 }

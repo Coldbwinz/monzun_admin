@@ -16,7 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -62,18 +62,19 @@ public class UserService {
      */
     public User create(UserRequest request) {
         User user = new User();
+        String password = RandomString.make(10);
 
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setPhone(request.getPhone());
         user.setRole(RoleEnum.TRACKER.getRole());
-        user.setPassword(generatePassword());
+        user.setPassword(passwordEncoder.encode(password));
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
 
         userRepository.save(user);
 
-        this.sendNewTrackerEmail(user);
+        this.sendNewTrackerEmail(user, password);
 
         return user;
     }
@@ -142,13 +143,15 @@ public class UserService {
      *
      * @param user новый трекер
      */
-    private void sendNewTrackerEmail(User user) {
+    private void sendNewTrackerEmail(User user, String password) {
         StringBuilder url = new StringBuilder(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString());
-        url.append("");//TODO:link
+        url.append("");//TODO:links
 
-        Map<String, Object> props = new HashMap<>();
+        Map<String, Object> props = new LinkedHashMap<>();
         props.put("name", user.getName());
-        props.put("button-url", url);
+        props.put("email", user.getEmail());
+        props.put("password", password);
+        props.put("url", url);
         Mail mail = emailService.createMail(user.getEmail(), "Welcome!", props);
 
         JobDataMap jobDataMap = new JobDataMap();
@@ -162,10 +165,6 @@ public class UserService {
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
-    }
-
-    private String generatePassword() {
-        return passwordEncoder.encode(RandomString.make(10));
     }
 
     private UserListDTO convertToDto(User user) {
