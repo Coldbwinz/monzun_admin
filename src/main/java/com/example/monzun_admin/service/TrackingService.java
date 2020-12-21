@@ -6,9 +6,7 @@ import com.example.monzun_admin.dto.TrackingListDTO;
 import com.example.monzun_admin.entities.*;
 import com.example.monzun_admin.enums.RoleEnum;
 import com.example.monzun_admin.exception.UserIsNotTrackerException;
-import com.example.monzun_admin.repository.AttachmentRepository;
-import com.example.monzun_admin.repository.StartupTrackingRepository;
-import com.example.monzun_admin.repository.TrackingRepository;
+import com.example.monzun_admin.repository.*;
 import com.example.monzun_admin.request.TrackingRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -26,17 +24,23 @@ public class TrackingService {
     private final TrackingRepository trackingRepository;
     private final AttachmentRepository attachmentRepository;
     private final StartupTrackingRepository startupTrackingRepository;
+    private final StartupRepository startupRepository;
+    private final UserRepository userRepository;
 
     public TrackingService(
             ModelMapper modelMapper,
             TrackingRepository trackingRepository,
             AttachmentRepository attachmentRepository,
-            StartupTrackingRepository startupTrackingRepository
+            StartupTrackingRepository startupTrackingRepository,
+            StartupRepository startupRepository,
+            UserRepository userRepository
     ) {
         this.modelMapper = modelMapper;
         this.trackingRepository = trackingRepository;
         this.attachmentRepository = attachmentRepository;
         this.startupTrackingRepository = startupTrackingRepository;
+        this.startupRepository = startupRepository;
+        this.userRepository = userRepository;
     }
 
     /**
@@ -51,28 +55,30 @@ public class TrackingService {
     }
 
     /**
-     * Конкретный трекинг, преобразованный в структуру для вывода
+     * Получение объекта Tracking по указанному ID
      *
-     * @param tracking Набор
-     * @return TrackingDTO
+     * @param id Tracking ID
+     * @return Tracking
+     * @throws EntityNotFoundException EntityNotFoundException
      */
-    public TrackingDTO getTracking(Tracking tracking) {
-        return convertToDto(tracking);
+    public Tracking getTracking(Long id) throws EntityNotFoundException {
+        return trackingRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Tracking not found id = " + id));
     }
 
     /**
      * Создание набора
      *
      * @param request характеристики набора
-     * @return Tracking
+     * @return TrackingDTO
      */
-    public Tracking create(TrackingRequest request) {
+    public TrackingDTO create(TrackingRequest request) {
         Tracking tracking = new Tracking();
         setRequestData(tracking, request);
         tracking.setCreatedAt(LocalDateTime.now());
         trackingRepository.save(tracking);
 
-        return tracking;
+        return convertToDto(tracking);
     }
 
     /**
@@ -82,49 +88,53 @@ public class TrackingService {
      * @param request характеристики набора
      * @return Tracking
      */
-    public Tracking update(Long id, TrackingRequest request) {
+    public TrackingDTO update(Long id, TrackingRequest request) throws EntityNotFoundException {
         Tracking tracking = getTracking(id);
         setRequestData(tracking, request);
         tracking.setUpdatedAt(LocalDateTime.now());
         trackingRepository.save(tracking);
 
-        return tracking;
+        return convertToDto(tracking);
     }
 
     /**
      * Удаление набора
      *
      * @param id ID набора
-     * @return boolean
      */
-    public boolean delete(Long id) {
-        Optional<Tracking> tracking = trackingRepository.findById(id);
+    public void delete(Long id) throws EntityNotFoundException {
+        Tracking tracking = trackingRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
 
-        if (!tracking.isPresent()) {
-            return false;
-        }
-
-        trackingRepository.delete(tracking.get());
-
-        return true;
+        trackingRepository.delete(tracking);
     }
 
     /**
      * Добавить трекера в стартап, который в наборе.
      *
-     * @param tracking набор
-     * @param startup  стартап
-     * @param tracker  трекер
+     * @param trackingId ID набора
+     * @param startupId  ID стартапа
+     * @param trackerId  ID трекера
      * @throws UserIsNotTrackerException UserIsNotTrackerException
      */
-    public void addTracker(Tracking tracking, Startup startup, User tracker) throws UserIsNotTrackerException {
+    public void addTracker(Long trackingId, Long startupId, Long trackerId)
+            throws UserIsNotTrackerException, EntityNotFoundException {
+        Tracking tracking = trackingRepository.findById(trackingId)
+                .orElseThrow(() -> new EntityNotFoundException("Tracking not found id " + trackingId));
+
+        Startup startup = startupRepository.findById(startupId)
+                .orElseThrow(() -> new EntityNotFoundException("Startup not found id " + startupId));
+
+        User tracker = userRepository.findById(trackerId)
+                .orElseThrow(() -> new EntityNotFoundException("Tracker in tracking not found id " + startupId));
+
         if (!tracker.getRole().equals(RoleEnum.TRACKER.getRole())) {
-            throw new UserIsNotTrackerException("User is not tracker");
+            throw new UserIsNotTrackerException(tracker);
         }
 
-        StartupTracking startupTracking = new StartupTracking();
-        startupTracking.setTracking(tracking);
-        startupTracking.setStartup(startup);
+        StartupTracking startupTracking = startupTrackingRepository.findByTrackingAndStartup(tracking, startup)
+                .orElseThrow(() -> new EntityNotFoundException("Startup in tracking not found"));
+
         startupTracking.setTracker(tracker);
         startupTrackingRepository.save(startupTracking);
     }
@@ -140,21 +150,6 @@ public class TrackingService {
         startupInfo.ifPresent(startupTrackingRepository::delete);
     }
 
-    /**
-     * Получение объекта Tracking по указанному ID
-     *
-     * @param id Tracking ID
-     * @return Tracking
-     * @throws EntityNotFoundException EntityNotFoundException
-     */
-    private Tracking getTracking(Long id) throws EntityNotFoundException {
-        Optional<Tracking> possibleTracking = trackingRepository.findById(id);
-        if (!possibleTracking.isPresent()) {
-            throw new EntityNotFoundException("Tracking not found id = " + id);
-        }
-
-        return possibleTracking.get();
-    }
 
     /**
      * Сеттер значений для Tracking Entity

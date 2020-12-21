@@ -4,20 +4,18 @@ import com.example.monzun_admin.dto.TrackingListDTO;
 import com.example.monzun_admin.entities.Startup;
 import com.example.monzun_admin.entities.StartupTracking;
 import com.example.monzun_admin.entities.Tracking;
-import com.example.monzun_admin.entities.User;
 import com.example.monzun_admin.exception.UserIsNotTrackerException;
 import com.example.monzun_admin.repository.StartupRepository;
 import com.example.monzun_admin.repository.StartupTrackingRepository;
 import com.example.monzun_admin.repository.TrackingRepository;
-import com.example.monzun_admin.repository.UserRepository;
 import com.example.monzun_admin.request.TrackingRequest;
 import com.example.monzun_admin.service.TrackingService;
-import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -30,20 +28,17 @@ public class TrackingController extends BaseRestController {
     private final TrackingRepository trackingRepository;
     private final StartupRepository startupRepository;
     private final TrackingService trackingService;
-    private final UserRepository userRepository;
     private final StartupTrackingRepository startupTrackingRepository;
 
     public TrackingController(
             TrackingRepository trackingRepository,
             StartupRepository startupRepository,
             TrackingService trackingService,
-            UserRepository userRepository,
             StartupTrackingRepository startupTrackingRepository
     ) {
         this.trackingRepository = trackingRepository;
         this.startupRepository = startupRepository;
         this.trackingService = trackingService;
-        this.userRepository = userRepository;
         this.startupTrackingRepository = startupTrackingRepository;
     }
 
@@ -65,12 +60,11 @@ public class TrackingController extends BaseRestController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<?> show(@PathVariable Long id) {
-        Optional<Tracking> possilbeTracking = trackingRepository.findById(id);
-        if (!possilbeTracking.isPresent()) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(trackingService.getTracking(id));
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-
-        return ResponseEntity.status(HttpStatus.OK).body(trackingService.getTracking(possilbeTracking.get()));
     }
 
     /**
@@ -81,8 +75,7 @@ public class TrackingController extends BaseRestController {
      */
     @PostMapping()
     public ResponseEntity<?> create(@Valid @RequestBody TrackingRequest trackingRequest) {
-        Tracking tracking = trackingService.create(trackingRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(trackingService.getTracking(tracking));
+        return ResponseEntity.status(HttpStatus.OK).body(trackingService.create(trackingRequest));
     }
 
     /**
@@ -94,9 +87,13 @@ public class TrackingController extends BaseRestController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody TrackingRequest trackingRequest) {
-        Tracking updatedTracking = trackingService.update(id, trackingRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(trackingService.getTracking(updatedTracking));
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(trackingService.update(id, trackingRequest));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
+
 
     /**
      * Удаление набора
@@ -106,9 +103,12 @@ public class TrackingController extends BaseRestController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        return trackingService.delete(id)
-                ? ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse())
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        try {
+            trackingService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     /**
@@ -125,31 +125,16 @@ public class TrackingController extends BaseRestController {
             @PathVariable Long trackingId,
             @PathVariable Long startupId,
             @Valid @NotNull(message = "Tracker is required") @RequestBody Long trackerId
-    ) {
-        Optional<Tracking> possibleTracking = trackingRepository.findById(trackingId);
-        Optional<Startup> possibleStartup = startupRepository.findById(startupId);
-        Optional<User> possibleTracker = userRepository.findById(trackerId);
-
-        if (!possibleStartup.isPresent() || !possibleTracking.isPresent() || !possibleTracker.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-
-        Optional<StartupTracking> startupTracking = startupTrackingRepository.findByTrackingAndStartup(
-                possibleTracking.get(),
-                possibleStartup.get()
-        );
-
-        if (!startupTracking.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
-
+    ) throws UserIsNotTrackerException {
+        trackingService.addTracker(trackingId, startupId, trackerId);
         try {
-            trackingService.addTracker(possibleTracking.get(), possibleStartup.get(), possibleTracker.get());
-        } catch (UserIsNotTrackerException userIsNotTrackerException) {
+            trackingService.addTracker(trackingId, startupId, trackerId);
+
+            return ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse());
+        } catch (UserIsNotTrackerException e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
-                    .body(new JSONObject().put("tracker", "User is not tracker"));
+                    .body(getErrorMessage("tracker", e.getMessage()));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse());
     }
 
     /**

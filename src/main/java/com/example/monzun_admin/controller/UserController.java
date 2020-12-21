@@ -3,7 +3,6 @@ package com.example.monzun_admin.controller;
 import com.example.monzun_admin.dto.UserDTO;
 import com.example.monzun_admin.dto.UserListDTO;
 import com.example.monzun_admin.entities.User;
-import com.example.monzun_admin.repository.UserRepository;
 import com.example.monzun_admin.request.UserRequest;
 import com.example.monzun_admin.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -11,20 +10,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @Validated
 @RestController
 @RequestMapping("api/users")
 public class UserController extends BaseRestController {
 
-    private final UserRepository userRepository;
     private final UserService userService;
 
-    public UserController(UserRepository userRepository, UserService userService) {
-        this.userRepository = userRepository;
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
@@ -46,12 +43,11 @@ public class UserController extends BaseRestController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<?> show(@PathVariable Long id) {
-        Optional<User> possibleUser = userRepository.findById(id);
-        if (!possibleUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(new UserDTO(this.userService.getUser(id)));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorMessage("not_found", e.getMessage()));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(new UserDTO(possibleUser.get()));
     }
 
     /**

@@ -17,7 +17,6 @@ import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class TrackingRequestService {
@@ -49,28 +48,21 @@ public class TrackingRequestService {
     }
 
     public List<TrackingRequest> getRequestsByTracking(Long trackingId) throws EntityNotFoundException {
-        Optional<Tracking> possibleTracking = trackingRepository.findById(trackingId);
-        if (!possibleTracking.isPresent()) {
-            throw new EntityNotFoundException("Tracking not found id = " + trackingId);
-        }
+        Tracking tracking = trackingRepository.findById(trackingId)
+                .orElseThrow(() -> new EntityNotFoundException("Tracking not found id = " + trackingId));
 
-        return trackingRequestRepository.findAllByTracking(possibleTracking.get());
+        return trackingRequestRepository.findAllByTracking(tracking);
     }
 
-    public void accept(Long trackingRequestId, Long trackerId) {
-        Optional<TrackingRequest> possibleTrackingRequest = trackingRequestRepository.findById(trackingRequestId);
-        if (!possibleTrackingRequest.isPresent()) {
-            throw new EntityNotFoundException("Tracking request not found id = " + trackingRequestId);
-        }
+    public void accept(Long trackingRequestId, Long trackerId) throws EntityNotFoundException {
+        TrackingRequest trackingRequest = trackingRequestRepository.findById(trackingRequestId)
+                .orElseThrow(() -> new EntityNotFoundException("Tracking request not found id = " + trackingRequestId));
 
-        Optional<User> possibleTracker = userRepository.findByIdAndRole(trackerId, RoleEnum.TRACKER.getRole());
-        if (!possibleTracker.isPresent()) {
-            throw new EntityNotFoundException("Tracker not found id = " + trackingRequestId);
-        }
+        User tracker = userRepository.findByIdAndRole(trackerId, RoleEnum.TRACKER.getRole())
+                .orElseThrow(() -> new EntityNotFoundException("Tracker not found id = " + trackingRequestId));
 
-        TrackingRequest trackingRequest = possibleTrackingRequest.get();
         StartupTracking startupTracking = new StartupTracking();
-        startupTracking.setTracker(possibleTracker.get());
+        startupTracking.setTracker(tracker);
         startupTracking.setStartup(trackingRequest.getStartup());
         startupTracking.setTracking(trackingRequest.getTracking());
 
@@ -83,14 +75,11 @@ public class TrackingRequestService {
     }
 
     public void decline(Long trackingRequestId) {
-        Optional<TrackingRequest> possibleTrackingRequest = trackingRequestRepository.findById(trackingRequestId);
-        if (!possibleTrackingRequest.isPresent()) {
-            throw new EntityNotFoundException("Tracking request not found id = " + trackingRequestId);
-        }
+        TrackingRequest trackingRequest = trackingRequestRepository.findById(trackingRequestId)
+                .orElseThrow(() -> new EntityNotFoundException("Tracking request not found id = " + trackingRequestId));
 
-        TrackingRequest trackingRequest = possibleTrackingRequest.get();
         sendDeclineEmail(trackingRequest.getStartup().getOwner(), trackingRequest.getTracking());
-        trackingRequestRepository.delete(possibleTrackingRequest.get());
+        trackingRequestRepository.delete(trackingRequest);
     }
 
     private void sendAcceptEmail(User user, Tracking tracking) {

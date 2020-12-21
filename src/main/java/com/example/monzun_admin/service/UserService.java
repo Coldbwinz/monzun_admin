@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,6 +51,16 @@ public class UserService {
      */
     public List<UserListDTO> getAllUsers() {
         return userRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+    /**
+     * Получение конкретного пользователя
+     *
+     * @param id ID пользователя
+     * @return User user
+     */
+    public User getUser(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
     }
 
     /**
@@ -126,16 +135,6 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(password));
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.saveAndFlush(user);
-    }
-
-
-    private User getUser(Long id) {
-        Optional<User> possibleUser = userRepository.findById(id);
-        if (!possibleUser.isPresent()) {
-            throw new EntityNotFoundException("User not found");
-        }
-
-        return possibleUser.get();
     }
 
     /**
