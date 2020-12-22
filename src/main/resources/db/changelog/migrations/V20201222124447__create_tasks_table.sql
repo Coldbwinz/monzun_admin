@@ -1,6 +1,6 @@
 CREATE TABLE tasks
 (
-    report_id      BIGSERIAL PRIMARY KEY,
+    task_id        BIGSERIAL PRIMARY KEY,
     tracking_id    BIGINT   NOT NULL,
     startup_id     BIGINT   NOT NULL,
     owner_id       BIGINT   NOT NULL,
