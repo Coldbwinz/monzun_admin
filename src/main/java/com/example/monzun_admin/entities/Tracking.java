@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -34,14 +35,14 @@ public class Tracking {
     private String description;
     private boolean isActive;
     @Column(name = "started_at")
-    private Date startedAt;
+    private LocalDateTime startedAt;
     @Column(name = "ended_at", nullable = false)
-    private Date endedAt;
+    private LocalDateTime endedAt;
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at", insertable = false)
     private LocalDateTime updatedAt;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "startup_trackings",
             joinColumns = @JoinColumn(name = "tracking_id"),
@@ -60,5 +61,28 @@ public class Tracking {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    /**
+     * Получить текущую неделю набора
+     *
+     * @return int
+     */
+    public int getCurrentWeek() {
+        if (LocalDateTime.now().isAfter(endedAt)) {
+            return getWeeksCount();
+        }
+
+        long diffInDays = ChronoUnit.DAYS.between(startedAt, LocalDateTime.now());
+        System.out.println();
+        return diffInDays < 0 ? 0 : diffInDays <= 7 ? 1 : (int) Math.ceil((diffInDays / 7.0));
+    }
+
+    /**
+     * Количество недель в наборе
+     * @return int
+     */
+    public int getWeeksCount() {
+        return (int) ChronoUnit.WEEKS.between(startedAt, endedAt);
     }
 }

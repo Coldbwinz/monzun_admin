@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -22,8 +23,8 @@ public class TrackingRequest {
     @NotNull(message = "is active required")
     private boolean isActive;
     @NotNull(message = "started date is required")
-    private Date startedAt;
+    private LocalDateTime startedAt;
     @NotNull(message = "ended date is required")
     @FutureOrPresent(message = "ended date should be in future or present")
-    private Date endedAt;
+    private LocalDateTime endedAt;
 }

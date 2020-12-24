@@ -17,6 +17,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContextManager;
 
+import java.time.LocalDateTime;
+
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 @AutoConfigureTestDatabase(replace = NONE)
@@ -88,8 +90,8 @@ public class TrackingRepositoryTest extends AbstractTestCase {
         tracking.setName(faker.name().title());
         tracking.setActive(faker.bool().bool());
         tracking.setDescription(faker.team().sport());
-        tracking.setStartedAt(faker.date().birthday());
-        tracking.setEndedAt(faker.date().birthday(1, 2));
+        tracking.setStartedAt(LocalDateTime.now());
+        tracking.setEndedAt(LocalDateTime.now());
         return tracking;
     }
 }
