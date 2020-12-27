@@ -53,6 +53,7 @@ public class StartupController extends BaseRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
+            startupService.delete(id);
             return ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse());
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

@@ -94,8 +94,9 @@ public class UserService {
      * @param id      ID пользователя
      * @param request параметры п
      * @return User
+     * @throws EntityNotFoundException EntityNotFoundException
      */
-    public User update(Long id, UserRequest request) {
+    public User update(Long id, UserRequest request) throws EntityNotFoundException {
         User user = getUser(id);
 
         user.setName(request.getName());
@@ -116,12 +117,10 @@ public class UserService {
      * Удаление пользователя
      *
      * @param id ID пользователя
-     * @return boolean
+     * @throws EntityNotFoundException EntityNotFoundException
      */
-    public boolean delete(Long id) {
+    public void delete(Long id) throws EntityNotFoundException {
         userRepository.delete(getUser(id));
-
-        return true;
     }
 
     /**

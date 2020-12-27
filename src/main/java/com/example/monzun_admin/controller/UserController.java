@@ -71,8 +71,12 @@ public class UserController extends BaseRestController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@Valid @PathVariable Long id, @RequestBody UserRequest userRequest) {
-        User updatedUser = userService.update(id, userRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(new UserDTO(updatedUser));
+        try {
+            User updatedUser = userService.update(id, userRequest);
+            return ResponseEntity.status(HttpStatus.OK).body(new UserDTO(updatedUser));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorMessage("not_found", e.getMessage()));
+        }
     }
 
     /**
@@ -83,8 +87,11 @@ public class UserController extends BaseRestController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        return userService.delete(id)
-                ? ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse())
-                : ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        try {
+            userService.delete(id);
+            return ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorMessage("not_found", e.getMessage()));
+        }
     }
 }
