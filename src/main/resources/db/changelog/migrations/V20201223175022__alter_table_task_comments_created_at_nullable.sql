@@ -1,0 +1,1 @@
+ALTER TABLE task_comments ALTER COLUMN created_at DROP NOT NULL
