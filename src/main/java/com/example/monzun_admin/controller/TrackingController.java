@@ -1,5 +1,6 @@
 package com.example.monzun_admin.controller;
 
+import com.example.monzun_admin.dto.TrackingDTO;
 import com.example.monzun_admin.dto.TrackingListDTO;
 import com.example.monzun_admin.entities.Startup;
 import com.example.monzun_admin.entities.StartupTracking;
@@ -10,7 +11,12 @@ import com.example.monzun_admin.repository.StartupTrackingRepository;
 import com.example.monzun_admin.repository.TrackingRepository;
 import com.example.monzun_admin.request.TrackingRequest;
 import com.example.monzun_admin.service.TrackingService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,15 +48,22 @@ public class TrackingController extends BaseRestController {
         this.startupTrackingRepository = startupTrackingRepository;
     }
 
+
     /**
      * Список наборов
      *
      * @return JSON
      */
-    @GetMapping()
+    @ApiOperation(value = "Список наборов")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно", response = TrackingListDTO.class),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован")
+    })
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<TrackingListDTO>> list() {
         return ResponseEntity.status(HttpStatus.OK).body(trackingService.getAllTrackings());
     }
+
 
     /**
      * Конкретный набор
@@ -58,8 +71,14 @@ public class TrackingController extends BaseRestController {
      * @param id ID набора
      * @return JSON
      */
-    @GetMapping("/{id}")
-    public ResponseEntity<?> show(@PathVariable Long id) {
+    @ApiOperation(value = "Просмотр конкретного набора")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно", response = TrackingDTO.class),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован"),
+            @ApiResponse(code = 404, message = "Набор не найден"),
+    })
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> show(@ApiParam(required = true, value = "ID набора") @PathVariable Long id) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(trackingService.getTracking(id));
         } catch (EntityNotFoundException e) {
@@ -67,16 +86,23 @@ public class TrackingController extends BaseRestController {
         }
     }
 
+
     /**
      * Создание набора
      *
      * @param trackingRequest параметры набора
      * @return JSON
      */
-    @PostMapping()
-    public ResponseEntity<?> create(@Valid @RequestBody TrackingRequest trackingRequest) {
+    @ApiOperation(value = "Создание набора")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно", response = TrackingDTO.class),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован"),
+    })
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> create(@ApiParam @Valid @RequestBody TrackingRequest trackingRequest) {
         return ResponseEntity.status(HttpStatus.OK).body(trackingService.create(trackingRequest));
     }
+
 
     /**
      * Редактирование набора
@@ -85,8 +111,16 @@ public class TrackingController extends BaseRestController {
      * @param trackingRequest параметры для редактирования набора
      * @return JSON
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody TrackingRequest trackingRequest) {
+    @ApiOperation(value = "Редактирование набора")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно", response = TrackingDTO.class),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован"),
+            @ApiResponse(code = 404, message = "Набор не найден"),
+    })
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> update(
+            @ApiParam(required = true, value = "ID набора") @PathVariable Long id,
+            @ApiParam(required = true) @Valid @RequestBody TrackingRequest trackingRequest) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(trackingService.update(id, trackingRequest));
         } catch (EntityNotFoundException e) {
@@ -101,8 +135,14 @@ public class TrackingController extends BaseRestController {
      * @param id ID набора
      * @return JSON
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    @ApiOperation(value = "Удаление набора")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно"),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован"),
+            @ApiResponse(code = 404, message = "Набор не найден"),
+    })
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> delete(@ApiParam(required = true, value = "ID набора") @PathVariable Long id) {
         try {
             trackingService.delete(id);
             return ResponseEntity.status(HttpStatus.OK).body(this.getTrueResponse());
@@ -110,6 +150,7 @@ public class TrackingController extends BaseRestController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
 
     /**
      * Установить трекера для стартапа в наборе. Стартапы добавляются только по заявкам, сам администратор добавить
@@ -120,13 +161,19 @@ public class TrackingController extends BaseRestController {
      * @param trackerId  ID трекера
      * @return JSON
      */
-    @PutMapping("/{trackingId}/startups/{startupId}/setTracker")
+    @ApiOperation(value = "Привязка трекера к стартапу в наборе")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно"),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован"),
+            @ApiResponse(code = 404, message = "Набор не найден"),
+            @ApiResponse(code = 422, message = "Указанный пользователь не является трекером"),
+    })
+    @PutMapping(value = "/{trackingId}/startups/{startupId}/setTracker", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> setStartupTracker(
-            @PathVariable Long trackingId,
-            @PathVariable Long startupId,
-            @Valid @NotNull(message = "Tracker is required") @RequestBody Long trackerId
-    ) throws UserIsNotTrackerException {
-        trackingService.addTracker(trackingId, startupId, trackerId);
+            @ApiParam(required = true, value = "ID набора") @PathVariable Long trackingId,
+            @ApiParam(required = true, value = "ID стартапа") @PathVariable Long startupId,
+            @ApiParam(required = true) @Valid @NotNull(message = "Tracker is required") @RequestBody Long trackerId
+    ) {
         try {
             trackingService.addTracker(trackingId, startupId, trackerId);
 
@@ -134,19 +181,32 @@ public class TrackingController extends BaseRestController {
         } catch (UserIsNotTrackerException e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                     .body(getErrorMessage("tracker", e.getMessage()));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(getErrorMessage("not_found", e.getMessage()));
         }
     }
 
     /**
      * Удаление стартапа из набора
      *
-     * @param id        ID набора
-     * @param startupId ID старапа
+     * @param trackingId ID набора
+     * @param startupId  ID старапа
      * @return JSON
      */
-    @DeleteMapping("/{id}/startups/{startupId}")
-    public ResponseEntity<?> deleteStartup(@PathVariable Long id, @PathVariable Long startupId) {
-        Optional<Tracking> possibleTracking = trackingRepository.findById(id);
+    @ApiOperation(value = "Привязка трекера к стартапу в наборе")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно"),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован"),
+            @ApiResponse(code = 403, message = "Доступ запрещен"),
+            @ApiResponse(code = 404, message = "Набор или стартап не надйен"),
+    })
+    @DeleteMapping(value = "/{trackingId}/startups/{startupId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> deleteStartup(
+            @ApiParam(required = true, value = "ID набора") @PathVariable Long trackingId,
+            @ApiParam(required = true, value = "ID стартапа") @PathVariable Long startupId
+    ) {
+        Optional<Tracking> possibleTracking = trackingRepository.findById(trackingId);
         Optional<Startup> possibleStartup = startupRepository.findById(startupId);
 
         if (!possibleTracking.isPresent() || !possibleStartup.isPresent()) {
@@ -164,6 +224,6 @@ public class TrackingController extends BaseRestController {
 
         trackingService.removeStartup(possibleTracking.get(), possibleStartup.get());
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getTrueResponse());
+        return ResponseEntity.status(HttpStatus.OK).body(getTrueResponse());
     }
 }

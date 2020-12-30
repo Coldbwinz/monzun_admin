@@ -2,6 +2,7 @@ package com.example.monzun_admin.request;
 
 
 import com.example.monzun_admin.validation.rules.UniqueUserEmail;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,10 +17,12 @@ import javax.validation.constraints.Pattern;
 public class UserRequest {
 
     @NotNull(message = "Name is required")
+    @ApiModelProperty(required = true)
     private String name;
     @NotNull(message = "Email is required")
     @Email(message = "Email must be valid")
     @UniqueUserEmail
+    @ApiModelProperty(required = true)
     private String email;
     @NotNull(message = "Phone is required")
     @Pattern(
@@ -27,6 +30,7 @@ public class UserRequest {
             message = "Phone format is invalid"
     )
     private String phone;
+    @ApiModelProperty(required = true)
     private boolean isBlocked;
     private String blockReason;
 }

@@ -9,7 +9,11 @@ import com.example.monzun_admin.request.PasswordChangeRequest;
 import com.example.monzun_admin.service.EmailService;
 import com.example.monzun_admin.service.PasswordResetTokenService;
 import com.example.monzun_admin.service.UserService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +61,8 @@ public class MeController extends BaseRestController {
      * @param response Response
      * @throws IOException IOException
      */
+    @ApiOperation(value = "Редирект на страницу изменения профиля. " +
+            "Если токен совпадает - редирект на страницу смены пароля.")
     @GetMapping("/changePassword")
     public void showChangePasswordPage(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
         boolean isValid = passwordResetTokenService.isValidPasswordResetToken(token);
@@ -71,7 +77,13 @@ public class MeController extends BaseRestController {
      * @param email Почта пользователя
      * @return JSON
      */
-    @PostMapping("/resetPassword")
+    @ApiOperation(value = "Сброс пароля", notes = "Отправка почты для сбора пароля с подтверждением в виде токена")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно"),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован"),
+            @ApiResponse(code = 404, message = "Пользователь не найден")
+    })
+    @PostMapping(value = "/resetPassword", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> resetPassword(@RequestParam String email) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
@@ -105,7 +117,15 @@ public class MeController extends BaseRestController {
      * @param passwordChangeRequest структура параметров при запросе
      * @return JSON
      */
-    @PostMapping("/savePassword")
+    @ApiOperation(value = "Редактирование пароля",
+            notes = "Изменение пароля с учетом проверки токена")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно"),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован"),
+            @ApiResponse(code = 404, message = "Пользователь не найден"),
+            @ApiResponse(code = 422, message = "Токен для сброса пароля не валидный")
+    })
+    @PostMapping(value = "/savePassword", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> savePassword(@Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
         boolean result = passwordResetTokenService.isValidPasswordResetToken(passwordChangeRequest.getToken());
 

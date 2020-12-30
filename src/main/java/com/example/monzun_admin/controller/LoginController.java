@@ -7,7 +7,12 @@ import com.example.monzun_admin.repository.UserRepository;
 import com.example.monzun_admin.request.AuthRequest;
 import com.example.monzun_admin.security.JwtUtil;
 import com.example.monzun_admin.service.MyUserDetailsService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -47,14 +52,22 @@ public class LoginController extends BaseRestController {
      * @param request credentials пользователя
      * @return JSON
      */
-    @PostMapping("/login")
-    public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody AuthRequest request) {
+    @ApiOperation(
+            value = "Авторизация",
+            notes = "Авторизация пользователя и создание JWT токена"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно", response = AuthDTO.class),
+            @ApiResponse(code = 403, message = "Доступ запрещен"),
+            @ApiResponse(code = 422, message = "Неверные данные для входа"),
+    })
+    @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createAuthenticationToken(@ApiParam @Valid @RequestBody AuthRequest request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
         } catch (BadCredentialsException e) {
-//            throw new Exception("Incorrect username or password", e); log
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
                     .body(this.getErrorMessage("password", "invalid password"));
         }
