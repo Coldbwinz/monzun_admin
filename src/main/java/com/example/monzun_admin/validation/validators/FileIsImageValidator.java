@@ -23,7 +23,7 @@ public class FileIsImageValidator implements ConstraintValidator<FileIsImage, Mu
     @Override
     public boolean isValid(MultipartFile image, ConstraintValidatorContext constraintValidatorContext) {
         String mimeType = URLConnection.guessContentTypeFromName(image.getOriginalFilename());
-        System.out.println(mimeType);
+
         return Arrays.asList(AVAILABLE_IMAGE_MIMETYPES).contains(mimeType);
     }
 }
