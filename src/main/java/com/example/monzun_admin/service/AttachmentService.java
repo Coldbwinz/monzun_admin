@@ -19,9 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -76,6 +78,7 @@ public class AttachmentService {
         return attachments;
     }
 
+
     /**
      * Хранение файла и создание записи в БД
      *
@@ -83,7 +86,7 @@ public class AttachmentService {
      * @return Attachment файл
      * @throws IOException IOException
      */
-    private Attachment storeFile(MultipartFile file) throws IOException {
+    public Attachment storeFile(MultipartFile file) throws IOException {
         Attachment attachment;
         if (file.isEmpty()) {
             throw new FileIsEmptyException("File is empty " + file.getName());
@@ -142,10 +145,21 @@ public class AttachmentService {
      * Преобразование модели в Short DTO
      *
      * @param attachment прикрепляемый файл
-     * @return AttachmentDTO
+     * @return AttachmentShortDTO
      */
     public AttachmentShortDTO convertToShortDto(Attachment attachment) {
         return modelMapper.map(attachment, AttachmentShortDTO.class);
+    }
+
+
+    /**
+     * Преобразование модели в DTO
+     *
+     * @param attachment прикрепляемый файл
+     * @return AttachmentDTO
+     */
+    public AttachmentDTO convertToDto(Attachment attachment) {
+        return modelMapper.map(attachment, AttachmentDTO.class);
     }
 
 
@@ -157,6 +171,14 @@ public class AttachmentService {
      * @throws IOException IOException
      */
     private Path saveFile(MultipartFile file) throws IOException {
+        File dir = new File(UPLOAD_PATH);
+
+        if (!dir.exists()) {
+            if (!dir.mkdirs()){
+                throw new IOException("Cannot create attachment directory");
+            }
+        }
+
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         return Files.write(Paths.get(UPLOAD_PATH + RandomString.make(10) + "." + extension), file.getBytes());
     }
@@ -188,16 +210,6 @@ public class AttachmentService {
         attachmentRepository.save(attachment);
 
         return attachment;
-    }
-
-    /**
-     * Преобразование модели в DTO
-     *
-     * @param attachment прикрепляемый файл
-     * @return AttachmentDTO
-     */
-    private AttachmentDTO convertToDto(Attachment attachment) {
-        return modelMapper.map(attachment, AttachmentDTO.class);
     }
 }
 

@@ -3,6 +3,8 @@ package com.example.monzun_admin.controller;
 import com.example.monzun_admin.dto.AttachmentDTO;
 import com.example.monzun_admin.repository.AttachmentRepository;
 import com.example.monzun_admin.service.AttachmentService;
+import com.example.monzun_admin.validation.rules.FileIsImage;
+import com.example.monzun_admin.validation.rules.MaxFileSize;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -16,9 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -35,13 +36,13 @@ public class AttachmentController extends BaseRestController {
     /**
      * Загрузка файлов.
      *
-     * @param files MultipartFile[] file
+     * @param files MultipartFile[] files
      * @return JSON-структура загруженного файла
      * @throws IOException IOException
      */
     @ApiOperation(
             value = "Загрузить файлы",
-            notes = "Мультизагрузка файлов на сервер и возрат соответствующих сущностей",
+            notes = "Мультизагрузка файлов на сервер и возрат соответствующих сущностей. Максимальный размер файла 800 МБ",
             response = AttachmentDTO.class
     )
     @ApiResponses({
@@ -49,11 +50,35 @@ public class AttachmentController extends BaseRestController {
             @ApiResponse(code = 401, message = "Пользователь не авторизован"),
     })
     @PostMapping("/upload")
-    public List<AttachmentDTO> upload(
+    public ResponseEntity<?> upload(
             @ApiParam(required = true, name = "files", value = "Файлы для загруки")
-            @RequestParam("files") MultipartFile[] files
+            @Valid @MaxFileSize @RequestPart("files") MultipartFile[] files
     ) throws IOException {
-        return attachmentService.getAttachmentsDTO(attachmentService.storeFiles(files));
+        return ResponseEntity.ok(attachmentService.getAttachmentsDTO(attachmentService.storeFiles(files)));
+    }
+
+    /**
+     * Загрузка одного файла - изображения.
+     *
+     * @param file MultipartFile file
+     * @return JSON
+     * @throws IOException IOException
+     */
+    @ApiOperation(
+            value = "Загрузить изображение",
+            notes = "Загрузка изображения. Файл проверяется на максимальный размер - 800 МБ и MIMETYPE",
+            response = AttachmentDTO.class
+    )
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно"),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован"),
+    })
+    @PostMapping("/upload-image")
+    public ResponseEntity<?> uploadImage(
+            @ApiParam(required = true, name = "files", value = "Изображение для загруки")
+            @Valid @MaxFileSize(groups = MultipartFile.class) @FileIsImage @RequestPart("files") MultipartFile file
+    ) throws IOException {
+        return ResponseEntity.ok(attachmentService.convertToShortDto(attachmentService.storeFile(file)));
     }
 
     /**

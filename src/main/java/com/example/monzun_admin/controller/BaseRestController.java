@@ -1,11 +1,19 @@
 package com.example.monzun_admin.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import net.minidev.json.JSONObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import java.util.*;
 
 /**
  * Базовый класс для REST контроллера.
  */
+@Validated
 public abstract class BaseRestController {
     /**
      * @return Структура неудачного запроса (success:false)
@@ -27,6 +35,26 @@ public abstract class BaseRestController {
         errorMap.put(errorK, errorV);
         Map<String, Map<String, String>> errors = new HashMap<>();
         errors.put("errors", errorMap);
+        return errors;
+    }
+
+    /**
+     * Валидация ConstraintViolationException
+     * @param e ConstraintViolationException
+     * @return JSON
+     */
+    @ExceptionHandler(value = { ConstraintViolationException.class })
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
+    public JSONObject handleResourceNotFoundException(ConstraintViolationException e) {
+        Set<ConstraintViolation<?>> violations = e.getConstraintViolations();
+        JSONObject errors = new JSONObject();
+        List<String> errorMessages = new ArrayList<>();
+
+        for (ConstraintViolation<?> violation : violations ) {
+            errorMessages.add(violation.getMessage());
+        }
+
+        errors.put("errors", errorMessages);
         return errors;
     }
 }
