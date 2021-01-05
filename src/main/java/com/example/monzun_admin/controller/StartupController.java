@@ -75,7 +75,7 @@ public class StartupController extends BaseRestController {
             @ApiResponse(code = 401, message = "Пользователь не найден"),
             @ApiResponse(code = 404, message = "Стартап не найден"),
     })
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> delete(@ApiParam(required = true, value = "ID стартапа") @PathVariable Long id) {
         try {
             startupService.delete(id);
