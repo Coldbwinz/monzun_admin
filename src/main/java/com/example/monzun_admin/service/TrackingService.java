@@ -3,6 +3,7 @@ package com.example.monzun_admin.service;
 
 import com.example.monzun_admin.dto.TrackingDTO;
 import com.example.monzun_admin.dto.TrackingListDTO;
+import com.example.monzun_admin.dto.UserListDTO;
 import com.example.monzun_admin.entities.*;
 import com.example.monzun_admin.enums.RoleEnum;
 import com.example.monzun_admin.exception.UserIsNotTrackerException;
@@ -26,6 +27,7 @@ public class TrackingService {
     private final StartupTrackingRepository startupTrackingRepository;
     private final StartupRepository startupRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     public TrackingService(
             ModelMapper modelMapper,
@@ -33,7 +35,8 @@ public class TrackingService {
             AttachmentRepository attachmentRepository,
             StartupTrackingRepository startupTrackingRepository,
             StartupRepository startupRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            UserService userService
     ) {
         this.modelMapper = modelMapper;
         this.trackingRepository = trackingRepository;
@@ -41,6 +44,7 @@ public class TrackingService {
         this.startupTrackingRepository = startupTrackingRepository;
         this.startupRepository = startupRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     /**
@@ -148,6 +152,18 @@ public class TrackingService {
     public void removeStartup(Tracking tracking, Startup startup) {
         Optional<StartupTracking> startupInfo = startupTrackingRepository.findByTrackingAndStartup(tracking, startup);
         startupInfo.ifPresent(startupTrackingRepository::delete);
+    }
+
+
+    /**
+     * Список трекеров
+     * @return List<UserListDTO>
+     */
+    public List<UserListDTO> getTrackers() {
+        return userRepository.findByRole(RoleEnum.TRACKER.getRole())
+                .stream()
+                .map(userService::convertToDto)
+                .collect(Collectors.toList());
     }
 
 

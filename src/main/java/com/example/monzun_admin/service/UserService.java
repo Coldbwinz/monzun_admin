@@ -38,7 +38,7 @@ public class UserService {
             ModelMapper modelMapper
     ) {
         this.passwordEncoder = passwordEncoder;
-        this.jobService = jobService;
+        this.jobService  = jobService;
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.modelMapper = modelMapper;
@@ -137,6 +137,15 @@ public class UserService {
     }
 
     /**
+     * Конвертирование Entity в DTO
+     * @param user Entity
+     * @return DTO
+     */
+    public UserListDTO convertToDto(User user) {
+        return modelMapper.map(user, UserListDTO.class);
+    }
+
+    /**
      * Отправка почты новому трекеру при создании.
      *
      * @param user новый трекер
@@ -163,9 +172,5 @@ public class UserService {
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
-    }
-
-    private UserListDTO convertToDto(User user) {
-        return modelMapper.map(user, UserListDTO.class);
     }
 }

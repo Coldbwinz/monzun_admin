@@ -151,6 +151,20 @@ public class TrackingController extends BaseRestController {
         }
     }
 
+    /**
+     * Список трекеров
+     *
+     * @return JSON
+     */
+    @ApiOperation(value = "Получение списка трекеров")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно"),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован"),
+    })
+    @GetMapping(value = "/tracker-list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getTrackerList() {
+        return ResponseEntity.ok(trackingService.getTrackers());
+    }
 
     /**
      * Установить трекера для стартапа в наборе. Стартапы добавляются только по заявкам, сам администратор добавить
