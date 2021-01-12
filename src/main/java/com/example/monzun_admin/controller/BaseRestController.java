@@ -1,7 +1,12 @@
 package com.example.monzun_admin.controller;
 
+import com.example.monzun_admin.entities.User;
+import com.example.monzun_admin.exception.NoAuthUserException;
+import com.example.monzun_admin.repository.UserRepository;
 import net.minidev.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -15,6 +20,32 @@ import java.util.*;
  */
 @Validated
 public abstract class BaseRestController {
+
+
+    @Autowired
+    private UserRepository userRepository;
+
+    /**
+     * Получение текущего авторизованного пользователя
+     *
+     * @return User авториванный пользователь
+     * @throws NoAuthUserException NoAuthUserException
+     */
+    protected User getAuthUser() throws NoAuthUserException {
+        User currentUser = userRepository.findByEmail(
+                SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getName()
+        );
+
+        if (currentUser == null) {
+            throw new NoAuthUserException();
+        }
+
+        return currentUser;
+    }
+
     /**
      * @return Структура неудачного запроса (success:false)
      */

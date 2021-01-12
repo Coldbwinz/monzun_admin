@@ -1,7 +1,9 @@
 package com.example.monzun_admin.controller;
 
+import com.example.monzun_admin.dto.UserDTO;
 import com.example.monzun_admin.entities.Mail;
 import com.example.monzun_admin.entities.User;
+import com.example.monzun_admin.exception.NoAuthUserException;
 import com.example.monzun_admin.exception.UserByEmailNotFoundException;
 import com.example.monzun_admin.repository.PasswordResetTokenRepository;
 import com.example.monzun_admin.repository.UserRepository;
@@ -52,6 +54,29 @@ public class MeController extends BaseRestController {
         this.emailService = emailService;
         this.passwordResetTokenService = passwordResetTokenService;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
+    }
+
+
+    /**
+     * Просмотр авторизованного пользователя
+     *
+     * @return JSON
+     */
+    @ApiOperation(
+            value = "Получение собственного профиля",
+            notes = "Запрос информации об авторизованном пользователе. Используется для просмотра собственного профиля"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно", response = UserDTO.class),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован")
+    })
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> me() {
+        try {
+            return ResponseEntity.ok(new UserDTO(this.getAuthUser()));
+        } catch (NoAuthUserException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     /**
