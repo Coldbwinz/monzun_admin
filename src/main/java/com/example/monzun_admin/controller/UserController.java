@@ -103,7 +103,7 @@ public class UserController extends BaseRestController {
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(
             @ApiParam(required = true, value = "ID пользователя") @Valid @PathVariable Long id,
-            @ApiParam @RequestBody UserRequest userRequest) {
+            @ApiParam @Valid @RequestBody UserRequest userRequest) {
         try {
             User updatedUser = userService.update(id, userRequest);
             return ResponseEntity.status(HttpStatus.OK).body(new UserDTO(updatedUser));
