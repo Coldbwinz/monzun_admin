@@ -9,6 +9,7 @@ import com.example.monzun_admin.exception.UserIsNotTrackerException;
 import com.example.monzun_admin.repository.StartupRepository;
 import com.example.monzun_admin.repository.StartupTrackingRepository;
 import com.example.monzun_admin.repository.TrackingRepository;
+import com.example.monzun_admin.request.ExistsTrackingRequest;
 import com.example.monzun_admin.request.TrackingRequest;
 import com.example.monzun_admin.service.TrackingService;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +19,7 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -99,8 +101,8 @@ public class TrackingController extends BaseRestController {
             @ApiResponse(code = 401, message = "Пользователь не авторизован"),
     })
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> create(@ApiParam @Valid @RequestBody TrackingRequest trackingRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body(trackingService.create(trackingRequest));
+    public ResponseEntity<?> create(@ApiParam @Valid @RequestBody TrackingRequest trackingRequest, BindingResult result) {
+        return ResponseEntity.ok(trackingService.create(trackingRequest));
     }
 
 
@@ -120,7 +122,7 @@ public class TrackingController extends BaseRestController {
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(
             @ApiParam(required = true, value = "ID набора") @PathVariable Long id,
-            @ApiParam(required = true) @Valid @RequestBody TrackingRequest trackingRequest) {
+            @ApiParam(required = true) @Valid @RequestBody ExistsTrackingRequest trackingRequest) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(trackingService.update(id, trackingRequest));
         } catch (EntityNotFoundException e) {

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -32,11 +33,12 @@ public class Tracking {
     @JoinColumn(name = "logo_id", referencedColumnName = "attachment_id")
     private Attachment logo;
     private String description;
-    private boolean isActive;
+    @Column(name = "is_active")
+    private boolean active;
     @Column(name = "started_at")
-    private LocalDateTime startedAt;
+    private LocalDate startedAt;
     @Column(name = "ended_at", nullable = false)
-    private LocalDateTime endedAt;
+    private LocalDate endedAt;
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
     @Column(name = "updated_at", insertable = false)
@@ -68,7 +70,7 @@ public class Tracking {
      * @return int
      */
     public int getCurrentWeek() {
-        if (LocalDateTime.now().isAfter(endedAt)) {
+        if (LocalDate.now().isAfter(endedAt)) {
             return getWeeksCount();
         }
 

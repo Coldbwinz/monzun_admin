@@ -3,6 +3,7 @@ package com.example.monzun_admin.controller;
 import com.example.monzun_admin.dto.UserDTO;
 import com.example.monzun_admin.dto.UserListDTO;
 import com.example.monzun_admin.entities.User;
+import com.example.monzun_admin.request.ExistsUserRequest;
 import com.example.monzun_admin.request.UserRequest;
 import com.example.monzun_admin.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -103,7 +104,7 @@ public class UserController extends BaseRestController {
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> update(
             @ApiParam(required = true, value = "ID пользователя") @Valid @PathVariable Long id,
-            @ApiParam @Valid @RequestBody UserRequest userRequest) {
+            @ApiParam @Valid @RequestBody ExistsUserRequest userRequest) {
         try {
             User updatedUser = userService.update(id, userRequest);
             return ResponseEntity.status(HttpStatus.OK).body(new UserDTO(updatedUser));

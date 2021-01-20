@@ -8,11 +8,13 @@ import com.example.monzun_admin.entities.*;
 import com.example.monzun_admin.enums.RoleEnum;
 import com.example.monzun_admin.exception.UserIsNotTrackerException;
 import com.example.monzun_admin.repository.*;
+import com.example.monzun_admin.request.ExistsTrackingRequest;
 import com.example.monzun_admin.request.TrackingRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -92,7 +94,7 @@ public class TrackingService {
      * @param request характеристики набора
      * @return Tracking
      */
-    public TrackingDTO update(Long id, TrackingRequest request) throws EntityNotFoundException {
+    public TrackingDTO update(Long id, @Valid ExistsTrackingRequest request) throws EntityNotFoundException {
         Tracking tracking = getTracking(id);
         setRequestData(tracking, request);
         tracking.setUpdatedAt(LocalDateTime.now());

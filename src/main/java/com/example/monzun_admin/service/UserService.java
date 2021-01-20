@@ -5,6 +5,7 @@ import com.example.monzun_admin.entities.Mail;
 import com.example.monzun_admin.entities.User;
 import com.example.monzun_admin.enums.RoleEnum;
 import com.example.monzun_admin.repository.UserRepository;
+import com.example.monzun_admin.request.ExistsUserRequest;
 import com.example.monzun_admin.request.UserRequest;
 import net.bytebuddy.utility.RandomString;
 import org.modelmapper.ModelMapper;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -96,7 +98,7 @@ public class UserService {
      * @return User
      * @throws EntityNotFoundException EntityNotFoundException
      */
-    public User update(Long id, UserRequest request) throws EntityNotFoundException {
+    public User update(Long id, @Valid ExistsUserRequest request) throws EntityNotFoundException {
         User user = getUser(id);
 
         user.setName(request.getName());

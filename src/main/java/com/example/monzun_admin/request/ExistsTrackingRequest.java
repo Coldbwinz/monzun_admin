@@ -1,6 +1,5 @@
 package com.example.monzun_admin.request;
 
-import com.example.monzun_admin.validation.rules.UniqueTrackingName;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,23 +12,21 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TrackingRequest {
-
-    @NotNull(message = "Name is required")
-    @UniqueTrackingName
+public class ExistsTrackingRequest extends TrackingRequest {
+    @NotNull(message = "name is required")
     @ApiModelProperty(required = true)
     private String name;
     private Long logoId;
     private String description;
-    @NotNull(message = "Is active required")
+    @NotNull(message = "is active required")
     @ApiModelProperty(required = true)
-    private boolean active;
-    @NotNull(message = "Started date is required")
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private boolean isActive;
+    @NotNull(message = "started date is required")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @ApiModelProperty(required = true)
     private LocalDate startedAt;
-    @NotNull(message = "Ended date is required")
+    @NotNull(message = "ended date is required")
     @ApiModelProperty(required = true)
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDate endedAt;
 }
