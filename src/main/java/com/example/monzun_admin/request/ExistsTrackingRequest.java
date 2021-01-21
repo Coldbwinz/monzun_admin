@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ExistsTrackingRequest {
+public class ExistsTrackingRequest extends BaseTrackingRequest {
     @NotNull(message = "name is required")
     @ApiModelProperty(required = true)
     private String name;

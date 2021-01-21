@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TrackingRequest {
+public class TrackingRequest extends BaseTrackingRequest{
 
     @NotNull(message = "Name is required")
     @UniqueTrackingName

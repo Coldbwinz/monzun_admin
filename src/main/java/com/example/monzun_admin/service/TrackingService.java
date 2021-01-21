@@ -8,6 +8,7 @@ import com.example.monzun_admin.entities.*;
 import com.example.monzun_admin.enums.RoleEnum;
 import com.example.monzun_admin.exception.UserIsNotTrackerException;
 import com.example.monzun_admin.repository.*;
+import com.example.monzun_admin.request.BaseTrackingRequest;
 import com.example.monzun_admin.request.ExistsTrackingRequest;
 import com.example.monzun_admin.request.TrackingRequest;
 import org.modelmapper.ModelMapper;
@@ -175,7 +176,7 @@ public class TrackingService {
      * @param tracking набор
      * @param request  характеристики набора
      */
-    private void setRequestData(Tracking tracking, TrackingRequest request) {
+    private void setRequestData(Tracking tracking, BaseTrackingRequest request) {
         tracking.setName(request.getName());
         tracking.setDescription(request.getDescription());
         tracking.setActive(request.isActive());

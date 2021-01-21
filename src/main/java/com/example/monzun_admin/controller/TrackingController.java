@@ -19,7 +19,6 @@ import io.swagger.annotations.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -101,7 +100,7 @@ public class TrackingController extends BaseRestController {
             @ApiResponse(code = 401, message = "Пользователь не авторизован"),
     })
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> create(@ApiParam @Valid @RequestBody TrackingRequest trackingRequest, BindingResult result) {
+    public ResponseEntity<?> create(@ApiParam @Valid @RequestBody TrackingRequest trackingRequest) {
         return ResponseEntity.ok(trackingService.create(trackingRequest));
     }
 
