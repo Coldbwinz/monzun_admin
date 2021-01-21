@@ -171,6 +171,27 @@ public class TrackingService {
 
 
     /**
+     * Преобразование List<Entity> в ListDTO
+     *
+     * @param tracking Набор
+     * @return ListTrackingDTO
+     */
+    public TrackingListDTO convertToListDto(Tracking tracking) {
+        return modelMapper.map(tracking, TrackingListDTO.class);
+    }
+
+    /**
+     * Преобразование Entity в DTO
+     *
+     * @param tracking Набор
+     * @return TrackingDTO
+     */
+    public TrackingDTO convertToDto(Tracking tracking) {
+        return modelMapper.map(tracking, TrackingDTO.class);
+    }
+
+
+    /**
      * Сеттер значений для Tracking Entity
      *
      * @param tracking набор
@@ -187,25 +208,5 @@ public class TrackingService {
             Optional<Attachment> attachment = attachmentRepository.findById(request.getLogoId());
             attachment.ifPresent(tracking::setLogo);
         }
-    }
-
-    /**
-     * Преобразование List<Entity> в ListDTO
-     *
-     * @param tracking Набор
-     * @return ListTrackingDTO
-     */
-    private TrackingListDTO convertToListDto(Tracking tracking) {
-        return modelMapper.map(tracking, TrackingListDTO.class);
-    }
-
-    /**
-     * Преобразование Entity в DTO
-     *
-     * @param tracking Набор
-     * @return TrackingDTO
-     */
-    private TrackingDTO convertToDto(Tracking tracking) {
-        return modelMapper.map(tracking, TrackingDTO.class);
     }
 }

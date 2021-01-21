@@ -81,7 +81,7 @@ public class TrackingController extends BaseRestController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> show(@ApiParam(required = true, value = "ID набора") @PathVariable Long id) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(trackingService.getTracking(id));
+            return ResponseEntity.ok(trackingService.convertToDto(trackingService.getTracking(id)));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
