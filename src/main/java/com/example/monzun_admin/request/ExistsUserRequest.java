@@ -13,7 +13,7 @@ import javax.validation.constraints.Pattern;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ExistsUserRequest extends UserRequest {
+public class ExistsUserRequest {
     @NotNull(message = "Name is required")
     @ApiModelProperty(required = true)
     private String name;
