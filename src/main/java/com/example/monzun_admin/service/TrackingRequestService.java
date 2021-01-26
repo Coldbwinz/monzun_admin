@@ -1,12 +1,14 @@
 package com.example.monzun_admin.service;
 
 
+import com.example.monzun_admin.dto.TrackingRequestListDTO;
 import com.example.monzun_admin.entities.*;
 import com.example.monzun_admin.enums.RoleEnum;
 import com.example.monzun_admin.repository.StartupTrackingRepository;
 import com.example.monzun_admin.repository.TrackingRepository;
 import com.example.monzun_admin.repository.TrackingRequestRepository;
 import com.example.monzun_admin.repository.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.quartz.JobDataMap;
 import org.quartz.SchedulerException;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import javax.persistence.EntityNotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class TrackingRequestService {
@@ -28,6 +31,7 @@ public class TrackingRequestService {
     private final UserRepository userRepository;
     private final StartupTrackingRepository startupTrackingRepository;
     private final TransactionTemplate transactionTemplate;
+    private final ModelMapper modelMapper;
 
     public TrackingRequestService(
             TrackingRepository trackingRepository,
@@ -36,7 +40,8 @@ public class TrackingRequestService {
             JobService jobService,
             UserRepository userRepository,
             StartupTrackingRepository startupTrackingRepository,
-            PlatformTransactionManager transactionManager
+            PlatformTransactionManager transactionManager,
+            ModelMapper modelMapper
     ) {
         this.trackingRepository = trackingRepository;
         this.trackingRequestRepository = trackingRequestRepository;
@@ -45,13 +50,17 @@ public class TrackingRequestService {
         this.userRepository = userRepository;
         this.startupTrackingRepository = startupTrackingRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
+        this.modelMapper = modelMapper;
     }
 
-    public List<TrackingRequest> getRequestsByTracking(Long trackingId) throws EntityNotFoundException {
+    public List<TrackingRequestListDTO> getRequestsByTracking(Long trackingId) throws EntityNotFoundException {
         Tracking tracking = trackingRepository.findById(trackingId)
                 .orElseThrow(() -> new EntityNotFoundException("Tracking not found id = " + trackingId));
 
-        return trackingRequestRepository.findAllByTracking(tracking);
+        return trackingRequestRepository.findAllByTracking(tracking)
+                .stream()
+                .map(this::convertToListDto)
+                .collect(Collectors.toList());
     }
 
     public void accept(Long trackingRequestId, Long trackerId) throws EntityNotFoundException {
@@ -119,5 +128,14 @@ public class TrackingRequestService {
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Преобразование в DTO
+     * @param trackingRequest заявка на набор
+     * @return TrackingRequestDTO
+     */
+    private TrackingRequestListDTO convertToListDto(TrackingRequest trackingRequest) {
+        return modelMapper.map(trackingRequest, TrackingRequestListDTO.class);
     }
 }
