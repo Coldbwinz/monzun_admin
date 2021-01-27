@@ -116,6 +116,27 @@ public class TrackingService {
         trackingRepository.delete(tracking);
     }
 
+
+    /**
+     * Получить трекера в стартапе, который в наборе.
+     *
+     * @param trackingId ID набора
+     * @param startupId  ID стартапа
+     * @return UserDTO
+     */
+    public UserListDTO getTracker(Long trackingId, Long startupId) throws EntityNotFoundException {
+        Tracking tracking = trackingRepository.findById(trackingId)
+                .orElseThrow(() -> new EntityNotFoundException("Tracking not found id " + trackingId));
+
+        Startup startup = startupRepository.findById(startupId)
+                .orElseThrow(() -> new EntityNotFoundException("Startup not found id " + startupId));
+
+        StartupTracking startupTracking = startupTrackingRepository.findByTrackingAndStartup(tracking, startup)
+                .orElseThrow(() -> new EntityNotFoundException("Startup in tracking not found"));
+
+        return userService.convertToDto(startupTracking.getTracker());
+    }
+
     /**
      * Добавить трекера в стартап, который в наборе.
      *

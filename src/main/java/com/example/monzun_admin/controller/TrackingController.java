@@ -167,6 +167,32 @@ public class TrackingController extends BaseRestController {
     }
 
     /**
+     * Получить трекера для стартапа в наборе.
+     *
+     * @param trackingId ID набора
+     * @param startupId  ID стартапа
+     * @return JSON
+     */
+    @ApiOperation(value = "Получение трекера стартапа в наборе")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Успешно"),
+            @ApiResponse(code = 401, message = "Пользователь не авторизован"),
+            @ApiResponse(code = 404, message = "Набор не найден"),
+    })
+    @GetMapping(value = "/{trackingId}/startups/{startupId}/getTracker", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getStartupTracker(
+            @ApiParam(required = true, value = "ID набора") @PathVariable Long trackingId,
+            @ApiParam(required = true, value = "ID стартапа") @PathVariable Long startupId
+    ) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(trackingService.getTracker(trackingId, startupId));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(getErrorMessage("not_found", e.getMessage()));
+        }
+    }
+
+    /**
      * Установить трекера для стартапа в наборе. Стартапы добавляются только по заявкам, сам администратор добавить
      * в набор стартап не может.
      *
