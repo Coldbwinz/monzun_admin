@@ -62,7 +62,7 @@ public class TrackingRequestController extends BaseRestController {
     @PostMapping(value = "/{trackingRequestId}/{trackerId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> accept(
             @ApiParam(required = true, value = "ID заявки") @PathVariable Long trackingRequestId,
-            @ApiParam(required = true, value = "ID набора") @PathVariable Long trackerId) {
+            @ApiParam(required = true, value = "ID трекера") @PathVariable Long trackerId) {
         try {
             trackingRequestService.accept(trackingRequestId, trackerId);
             return ResponseEntity.status(HttpStatus.OK).body(getTrueResponse());

@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
@@ -183,11 +182,11 @@ public class TrackingController extends BaseRestController {
             @ApiResponse(code = 404, message = "Набор не найден"),
             @ApiResponse(code = 422, message = "Указанный пользователь не является трекером"),
     })
-    @PutMapping(value = "/{trackingId}/startups/{startupId}/setTracker", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{trackingId}/startups/{startupId}/setTracker/{trackerId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> setStartupTracker(
             @ApiParam(required = true, value = "ID набора") @PathVariable Long trackingId,
             @ApiParam(required = true, value = "ID стартапа") @PathVariable Long startupId,
-            @ApiParam(required = true) @Valid @NotNull(message = "Tracker is required") @RequestBody Long trackerId
+            @ApiParam(required = true, value = "ID трекера")  @PathVariable Long trackerId
     ) {
         try {
             trackingService.addTracker(trackingId, startupId, trackerId);
@@ -209,7 +208,7 @@ public class TrackingController extends BaseRestController {
      * @param startupId  ID старапа
      * @return JSON
      */
-    @ApiOperation(value = "Привязка трекера к стартапу в наборе")
+    @ApiOperation(value = "Удаление стартапа из набора")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Успешно"),
             @ApiResponse(code = 401, message = "Пользователь не авторизован"),
