@@ -44,6 +44,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter implements 
                 .authorizeRequests()
                 .antMatchers(
                         "/api/auth/login",
+                        "/api/attachment/download/**",
                         "/api/me/savePassword",
                         "/api/me/resetPassword",
                         "/swagger-resources/**",
