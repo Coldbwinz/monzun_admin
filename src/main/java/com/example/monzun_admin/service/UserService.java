@@ -109,6 +109,8 @@ public class UserService {
 
         if (request.isBlocked()) {
             user.setBlockReason(request.getBlockReason());
+        } else {
+            user.setBlockReason(null);
         }
 
         userRepository.saveAndFlush(user);
