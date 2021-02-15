@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class TrackingRequestListDTO {
     private Long id;
-    private StartupListDTO startup;
+    private StartupDTO startup;
     private TrackingListDTO tracking;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
     private LocalDateTime createdAt;
