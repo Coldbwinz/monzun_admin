@@ -18,10 +18,9 @@ public interface WeekReportRepository extends JpaRepository<WeekReport, Long> {
     List<Attachment> getWeekReportAttachments(@Param("weekReport") WeekReport weekReport);
 
     @Query("SELECT wr FROM WeekReport wr WHERE wr.tracking=:#{#tracking} " +
-            "AND wr.startup = :#{#startup} AND wr.week BETWEEN 1 AND :#{#week}")
-    List<WeekReport> findWeekReportsByTrackingAndStartupAndForWeek(
+            "AND wr.startup = :#{#startup}")
+    List<WeekReport> findWeekReportsByTrackingAndStartup(
             @Param("tracking") Tracking tracking,
-            @Param("startup") Startup startup,
-            @Param("week") Integer week
+            @Param("startup") Startup startup
     );
 }
