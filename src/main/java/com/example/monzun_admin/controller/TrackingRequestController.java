@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.ValidationException;
 
 @Validated
 @RestController
@@ -68,6 +69,8 @@ public class TrackingRequestController extends BaseRestController {
             return ResponseEntity.status(HttpStatus.OK).body(getTrueResponse());
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorMessage("not_found", e.getMessage()));
+        } catch (ValidationException e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(getErrorMessage("error", e.getMessage()));
         }
     }
 

@@ -16,9 +16,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.ValidationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,10 +72,18 @@ public class TrackingRequestService {
         User tracker = userRepository.findByIdAndRole(trackerId, RoleEnum.TRACKER.getRole())
                 .orElseThrow(() -> new EntityNotFoundException("Tracker not found id = " + trackingRequestId));
 
+        Tracking tracking = trackingRequest.getTracking();
+        Startup startup = trackingRequest.getStartup();
+
+        Optional<StartupTracking> optionalStartupTracking = startupTrackingRepository.findByTrackingAndStartup(tracking, startup);
+        if (optionalStartupTracking.isPresent()) {
+            throw new ValidationException("This startup "+ startup.getName() +" in tracking = " + tracking.getName());
+        }
+
         StartupTracking startupTracking = new StartupTracking();
         startupTracking.setTracker(tracker);
-        startupTracking.setStartup(trackingRequest.getStartup());
-        startupTracking.setTracking(trackingRequest.getTracking());
+        startupTracking.setStartup(startup);
+        startupTracking.setTracking(tracking);
 
         transactionTemplate.executeWithoutResult(exec -> {
             startupTrackingRepository.save(startupTracking);
