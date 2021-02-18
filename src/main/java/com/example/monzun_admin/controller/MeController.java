@@ -14,6 +14,7 @@ import com.example.monzun_admin.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -41,14 +43,17 @@ public class MeController extends BaseRestController {
     private final EmailService emailService;
     private final PasswordResetTokenService passwordResetTokenService;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final Environment environment;
 
     public MeController(
+            Environment environment,
             UserRepository userRepository,
             UserService userService,
             EmailService emailService,
             PasswordResetTokenService passwordResetTokenService,
             PasswordResetTokenRepository passwordResetTokenRepository
     ) {
+        this.environment = environment;
         this.userRepository = userRepository;
         this.userService = userService;
         this.emailService = emailService;
@@ -79,22 +84,6 @@ public class MeController extends BaseRestController {
         }
     }
 
-    /**
-     * Проверка токена из письма восстановления пароля. Если токен совпадает - редирект на страницу смены пароля.
-     *
-     * @param token    Токен из письма при запросе смены пароля
-     * @param response Response
-     * @throws IOException IOException
-     */
-    @ApiOperation(value = "Редирект на страницу изменения профиля. " +
-            "Если токен совпадает - редирект на страницу смены пароля.")
-    @GetMapping("/changePassword")
-    public void showChangePasswordPage(@RequestParam("token") String token, HttpServletResponse response) throws IOException {
-        boolean isValid = passwordResetTokenService.isValidPasswordResetToken(token);
-        String redirectUrl = isValid ? "1" : "2"; //TODO: links
-
-        response.sendRedirect(redirectUrl);
-    }
 
     /**
      * Формирование токена для сброса пароля и отправка почты с инструкцией по смене пароля
@@ -117,9 +106,9 @@ public class MeController extends BaseRestController {
         String token = UUID.randomUUID().toString();
         passwordResetTokenService.createPasswordResetTokenForUser(user, token);
 
-        StringBuilder url = new StringBuilder(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString());
-        url.append("api/me/confirmReset?token=");
-        url.append(token); //TODO:links
+        StringBuilder url = new StringBuilder(Objects.requireNonNull(environment.getProperty("CLIENT_APP_URL")));
+        url.append("/reestablish?token=");
+        url.append(token);
 
         Map<String, Object> props = new HashMap<>();
         props.put("name", user.getName());
