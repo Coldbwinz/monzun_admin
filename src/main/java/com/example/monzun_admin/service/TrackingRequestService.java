@@ -11,6 +11,7 @@ import com.example.monzun_admin.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.quartz.JobDataMap;
 import org.quartz.SchedulerException;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -34,11 +35,13 @@ public class TrackingRequestService {
     private final StartupTrackingRepository startupTrackingRepository;
     private final TransactionTemplate transactionTemplate;
     private final ModelMapper modelMapper;
+    private final Environment environment;
 
     public TrackingRequestService(
             TrackingRepository trackingRepository,
             TrackingRequestRepository trackingRequestRepository,
             EmailService emailService,
+            Environment environment,
             JobService jobService,
             UserRepository userRepository,
             StartupTrackingRepository startupTrackingRepository,
@@ -53,6 +56,7 @@ public class TrackingRequestService {
         this.startupTrackingRepository = startupTrackingRepository;
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.modelMapper = modelMapper;
+        this.environment = environment;
     }
 
     public List<TrackingRequestListDTO> getRequestsByTracking(Long trackingId) throws EntityNotFoundException {
@@ -77,7 +81,7 @@ public class TrackingRequestService {
 
         Optional<StartupTracking> optionalStartupTracking = startupTrackingRepository.findByTrackingAndStartup(tracking, startup);
         if (optionalStartupTracking.isPresent()) {
-            throw new ValidationException("This startup "+ startup.getName() +" in tracking = " + tracking.getName());
+            throw new ValidationException("This startup " + startup.getName() + " in tracking = " + tracking.getName());
         }
 
         StartupTracking startupTracking = new StartupTracking();
@@ -105,7 +109,7 @@ public class TrackingRequestService {
         Map<String, Object> props = new HashMap<>();
         props.put("name", user.getName());
         props.put("tracking", tracking);
-        props.put("url", "url"); //TODO:links
+        props.put("url", environment.getProperty("CLIENT_APP_URL") + "sets/" + tracking.getId());
         Mail mail = emailService.createMail(user.getEmail(), "Welcome to tracking!", props);
 
         JobDataMap jobDataMap = new JobDataMap();
@@ -142,6 +146,7 @@ public class TrackingRequestService {
 
     /**
      * Преобразование в DTO
+     *
      * @param trackingRequest заявка на набор
      * @return TrackingRequestDTO
      */

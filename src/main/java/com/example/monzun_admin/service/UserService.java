@@ -11,6 +11,7 @@ import net.bytebuddy.utility.RandomString;
 import org.modelmapper.ModelMapper;
 import org.quartz.JobDataMap;
 import org.quartz.SchedulerException;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -31,14 +32,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final ModelMapper modelMapper;
+    private final Environment environment;
 
     public UserService(
             BCryptPasswordEncoder passwordEncoder,
             JobService jobService,
             UserRepository userRepository,
             EmailService emailService,
-            ModelMapper modelMapper
+            ModelMapper modelMapper,
+            Environment environment
     ) {
+        this.environment = environment;
         this.passwordEncoder = passwordEncoder;
         this.jobService  = jobService;
         this.userRepository = userRepository;
@@ -155,14 +159,11 @@ public class UserService {
      * @param user новый трекер
      */
     private void sendNewTrackerEmail(User user, String password) {
-        StringBuilder url = new StringBuilder(ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString());
-        url.append("");//TODO:links
-
         Map<String, Object> props = new LinkedHashMap<>();
         props.put("name", user.getName());
         props.put("email", user.getEmail());
         props.put("password", password);
-        props.put("url", url);
+        props.put("url", environment.getProperty("CLIENT_APP_URL"));
         Mail mail = emailService.createMail(user.getEmail(), "Welcome!", props);
 
         JobDataMap jobDataMap = new JobDataMap();
