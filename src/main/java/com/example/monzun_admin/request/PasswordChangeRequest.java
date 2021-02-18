@@ -13,8 +13,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PasswordChangeRequest {
-    @NotNull
+    @NotNull(message = "token is required")
     private String token;
-    @NotNull @Min(6)
+    @NotNull(message = "password is required")
     private String newPassword;
 }
